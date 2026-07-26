@@ -1,6 +1,7 @@
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "motor"))
-from engine import capacidade_fuc1, carregar_regras
+from engine import (capacidade_fuc1, capacidade_moradia, carregar_regras,
+                    analisar_ponto)
 
 def test_regras_carregam():
     r = carregar_regras("fuc-1", "moradia", "transversais")
@@ -18,5 +19,49 @@ def test_caso_sintetico():
     assert r["abc_max_m2"] == 1260           # empena 18 → 6 pisos
     assert "rgeu-59" in r["regras_base"] and "rgeu-62" in r["regras_base"]
 
+def test_moradia_sintetico():
+    r = capacidade_moradia(dict(area_m2=400, frente_m=12, profundidade_m=15))
+    assert r["pisos"] == 3                    # 30.1.c
+    assert r["cercea_m"] == 9.0               # 3 × 3 m, abaixo do tecto de 11 m
+    assert r["impermeavel_max_m2"] == 240.0   # 0,6 × 400 [30.1.b]
+    assert r["implantacao_m2"] == 180         # 12 × 15 < 240
+    assert r["abc_min_m2"] == 540
+    assert "rpdm-30.1.b" in r["regras_base"] and "rpdm-30.1.c" in r["regras_base"]
+
+def test_moradia_parcela_grande():
+    r = capacidade_moradia(dict(area_m2=2500, frente_m=20, profundidade_m=20))
+    assert "rpdm-30.2" in r["regras_base"]    # > 2000 m² -> implantação livre
+
+def test_analisar_ponto_despacho_fuc1():
+    # consulta injectada (sem rede)
+    consulta = {"categoria_slug": "frente_urbana_continua_tipo_I",
+                "categoria": {"sc_espaco": "Área de frente urbana contínua de tipo I",
+                              "sc_espaco_cod": "TE2AFUCT1"},
+                "operativa": {"t_espaco": "Espaço consolidado"},
+                "condicionantes": []}
+    parcela = dict(area_m2=300, frente_m=10, profundidade_m=30,
+                   moda_cercea_m=16.4, largura_arruamento_m=12)
+    r = analisar_ponto(0, 0, parcela, consulta=consulta)
+    assert r["estado"] == "ok"
+    assert r["capacidade"]["pisos"] == 4
+
+def test_analisar_ponto_sem_regras_com_aviso():
+    consulta = {"categoria_slug": None,
+                "categoria": {"sc_espaco": "Área de infraestruturas"},
+                "operativa": {},
+                "condicionantes": [
+                    {"camada": "Património edificado", "designacao": "Centro Histórico",
+                     "legislacao": "Lei 107/2001"},
+                    {"camada": "Área de Intervenção do Plano", "designacao": None,
+                     "legislacao": None}]}
+    r = analisar_ponto(0, 0, None, consulta=consulta)
+    assert "carece de análise" in r["estado"]
+    assert any("patrimonial" in a for a in r["avisos"])
+    # a condicionante de âmbito municipal não polui as efetivas
+    assert [c["camada"] for c in r["condicionantes_efetivas"]] == ["Património edificado"]
+
 if __name__ == "__main__":
-    test_regras_carregam(); test_caso_sintetico(); print("todos os testes passam")
+    test_regras_carregam(); test_caso_sintetico()
+    test_moradia_sintetico(); test_moradia_parcela_grande()
+    test_analisar_ponto_despacho_fuc1(); test_analisar_ponto_sem_regras_com_aviso()
+    print("todos os testes passam")

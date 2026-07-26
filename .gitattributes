@@ -1,0 +1,8 @@
+# Normaliza fins de linha: LF no repositório, evita avisos CRLF no Windows.
+* text=auto eol=lf
+
+# Binários (mesmo que ignorados) — nunca normalizar.
+*.gpkg binary
+*.png binary
+*.jpg binary
+*.pdf binary
