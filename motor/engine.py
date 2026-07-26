@@ -189,7 +189,7 @@ def _condicionantes_para_avisos(condicionantes):
     return efetivas, municipais, avisos
 
 
-def analisar_ponto(x, y, parcela=None, consulta=None):
+def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
     """Liga a consulta por ponto (EPSG:3763) ao motor de regras.
 
     Resolve a categoria de solo, encaminha para as regras dessa categoria e
@@ -197,6 +197,8 @@ def analisar_ponto(x, y, parcela=None, consulta=None):
     `parcela` fornece as dimensões (área/frente/profundidade/moda) enquanto a
     camada de parcelas não está ligada. `consulta` permite injectar um
     resultado de consultar_ponto já obtido (evita a rede em testes).
+    `auto_moda=True` calcula a moda da cércea da frente a partir do Overture
+    (motor.frente) e preenche `moda_cercea_m` se a parcela não o trouxer.
     """
     if consulta is None:
         import pdm_arcgis
@@ -215,6 +217,7 @@ def analisar_ponto(x, y, parcela=None, consulta=None):
         "condicionantes_efetivas": efetivas,
         "condicionantes_ambito_municipal": municipais,
         "avisos": avisos,
+        "frente": None,
         "capacidade": None,
         "estado": None,
     }
@@ -230,6 +233,13 @@ def analisar_ponto(x, y, parcela=None, consulta=None):
                          "(area_m2, frente_m, profundidade_m, moda_cercea_m) "
                          "para calcular o intervalo")
         return out
+
+    if auto_moda:
+        import frente as _frente
+        finfo = _frente.frente_no_ponto(x, y)
+        out["frente"] = finfo
+        if finfo.get("moda_cercea_m") and not parcela.get("moda_cercea_m"):
+            parcela = {**parcela, "moda_cercea_m": finfo["moda_cercea_m"]}
 
     out["capacidade"] = fn(parcela)
     out["estado"] = "ok"
