@@ -1,0 +1,9 @@
+# Motor CABE + pipelines de dados (Task 1-3). Python 3.12.
+# Instalar num venv:  python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
+geopandas>=1.1
+pyogrio>=0.13
+shapely>=2.1
+pyproj>=3.7
+requests>=2.31
+duckdb>=1.5
+PyYAML>=6.0
