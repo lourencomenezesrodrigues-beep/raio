@@ -1,0 +1,25 @@
+id: rpdm-24.3
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 3"
+categoria: frente_urbana_continua_tipo_I
+tema: ocupacao_excedentaria_logradouro
+texto: >
+  Nas situações em que se verifique uma ocupação existente no logradouro,
+  que ultrapasse os parâmetros aplicáveis nesta subcategoria, apenas se
+  admite nova construção ou a ampliação do edifício situado na frente
+  urbana, se ocorrer a demolição de área de edificação equivalente no
+  logradouro.
+computabilidade: automatica_com_edificado
+entradas: [pegadas_edificado_na_parcela, poligono_parcela]
+efeito: >
+  Se o edificado existente no logradouro exceder os parâmetros (25 m /
+  permeabilidade), a nova capacidade fica condicionada a demolição
+  equivalente: a ficha desconta e assinala.
+papel_no_intervalo: base
+clarificacoes:
+  - fonte: "Newsletter 12/2025"
+    nota: >
+      Admite-se aumento do número de pisos em ocupações excedentárias do
+      logradouro desde que as obras não agravem a área de edificação, o
+      índice de impermeabilização nem a altura das construções existentes
+      no logradouro.

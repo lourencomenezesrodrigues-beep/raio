@@ -1,0 +1,31 @@
+id: rgeu-73
+diploma: RGEU (DL 38 382/1951, versão consolidada 29/05/2026)
+norma: "Artigo 73.º"
+categoria: transversal
+condicao_aplicacao: janelas_de_compartimentos_de_habitacao
+tema: afastamento_de_janelas
+texto: >
+  As janelas dos compartimentos das habitações deverão ser sempre
+  dispostas de forma que o seu afastamento de qualquer muro ou fachada
+  fronteiros, medido perpendicularmente ao plano da janela e atendendo ao
+  disposto no artigo 75.º, não seja inferior a metade da altura desse muro
+  ou fachada acima do nível do pavimento do compartimento, com o mínimo de
+  3 metros. Além disso não deverá haver a um e outro lado do eixo vertical
+  da janela qualquer obstáculo à iluminação a distância inferior a 2
+  metros, devendo garantir-se, em toda esta largura, o afastamento mínimo
+  de 3 metros acima fixado.
+parametros:
+  afastamento_min: max(metade_da_altura_do_obstaculo_fronteiro, 3 m)
+  faixa_lateral_livre_m: 2
+  referencia_medicao: limites_extremos_de_varandas_e_salientes (art. 75.º)
+computavel_nota: >
+  Determinante no desenho dos fogos; na capacidade, actua como verificação
+  da profundidade útil face a muros e empenas do interior do quarteirão.
+computabilidade: automatica_com_edificado
+entradas: [alturas_obstaculos_interiores_quarteirao, envelope]
+efeito: >
+  Verificação de salubridade da profundidade: se o tardoz do envelope
+  ficar a menos de max(3 m, altura/2) de muro ou empena fronteiros, os
+  compartimentos habitacionais dessa fachada ficam inviáveis e a ficha
+  reduz a profundidade útil ou assinala a limitação.
+papel_no_intervalo: base

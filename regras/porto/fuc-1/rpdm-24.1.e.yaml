@@ -1,0 +1,26 @@
+id: rpdm-24.1.e
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea e)"
+categoria: frente_urbana_continua_tipo_I
+tema: cercea_maxima
+texto: >
+  A cércea resultante não ultrapasse a moda da cércea da frente urbana do
+  quarteirão onde se situa.
+parametros:
+  criterio: moda_da_cercea_da_frente_urbana
+  metodo_moda: soma_de_extensoes_de_fachada_por_valor_de_cercea
+  conversao_pisos: pe_direito_assumido_m
+clarificacoes:
+  - fonte: "RPDM art. 3.º o)"
+    nota: >
+      Moda = a cércea com maior extensão ao longo da frente urbana
+      (ponderação por comprimento de fachada, não por contagem de
+      edifícios). População: fachadas entre duas vias públicas sucessivas,
+      só do lado da parcela (art. 3.º l) e anotação 7).
+computabilidade: automatica_com_edificado
+entradas: [alturas_edificado_frente_urbana, comprimentos_fachada]
+efeito: >
+  Regra determinante da capacidade: fixa a cércea (e via pé direito
+  assumido, o número de pisos) do envelope. Aplicar tolerância declarada
+  (arredondar ao múltiplo de 3 m) conforme parametros_globais.
+papel_no_intervalo: base

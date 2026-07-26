@@ -1,0 +1,21 @@
+id: rpdm-24.1.b
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea b)"
+categoria: frente_urbana_continua_tipo_I
+tema: alinhamento_tardoz
+texto: >
+  O alinhamento da fachada de tardoz do corpo dominante do edifício é o
+  definido pelos alinhamentos de tardoz que apresenta maior extensão na
+  frente urbana em que se insere, podendo ser admitido outro alinhamento,
+  designadamente, o definido pelos alinhamentos dos edifícios confinantes
+  a manter, ou os que não venham a prejudicar construções nos prédios
+  vizinhos.
+parametros:
+  criterio: tardoz_de_maior_extensao_na_frente_urbana
+  alternativas_admitidas: [tardoz_dos_confinantes_a_manter]
+computabilidade: automatica_com_edificado
+entradas: [pegadas_edificado_frente_urbana, poligono_parcela]
+efeito: >
+  Define a profundidade do corpo dominante (limite de tardoz do envelope),
+  em conjugação com o tecto dos 25 m da alínea d).
+papel_no_intervalo: base

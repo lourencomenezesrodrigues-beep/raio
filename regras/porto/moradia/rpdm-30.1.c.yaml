@@ -1,0 +1,40 @@
+id: rpdm-30.1.c
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 30.º, n.º 1, alínea c)"
+categoria: edificios_tipo_moradia
+tema: numero_de_pisos
+texto: >
+  O número máximo de pisos acima do solo é três, com exceção de situações
+  de colmatação de conjuntos consolidados, em que o número de pisos é
+  definido em função da moda da cércea.
+parametros:
+  pisos_max_acima_do_solo: 3
+  excecao: colmatacao_de_conjuntos_consolidados -> moda_da_cercea
+clarificacoes:
+  - fonte: "RPDM comentado, anotações 1 e 2 ao art. 30.º"
+    nota: >
+      Pisos contam-se acima da cota do solo existente, não da cota de
+      soleira. Em parcelas entre duas vias habilitantes com declive
+      acentuado, os pisos acompanham o declive: 3 pisos vistos de cada
+      arruamento. A regra não se aplica a obras em edifícios existentes
+      sem aumento da altura da fachada, mesmo que aumentem o número de
+      pisos. Bairros habitacionais identificados em regulamento municipal
+      têm disposições próprias.
+  - fonte: "CRMP B-1/2.º, n.º 4"
+    nota: >
+      Confirma: o máximo de pisos não se aplica a obras em edifícios
+      existentes das quais não resulte aumento da altura do edifício.
+  - fonte: "Newsletter 04/2026"
+    nota: >
+      A altura máxima da fachada principal não pode ultrapassar 11 m
+      (definição de altura da fachada da Ficha I-6 do DR 5/2019: da cota
+      de soleira à cornija/platibanda, acrescida da elevação da soleira).
+      Acima dos três pisos só elementos acessórios na cobertura.
+computabilidade: automatica_com_edificado
+entradas: [alturas_edificado_envolvente, declive_parcela]
+efeito: >
+  Fixa os pisos do envelope em 3 (limite inferior) com tecto absoluto de
+  11 m de fachada; a excepção de colmatação de conjunto consolidado com
+  mais pisos activa a moda da cércea como limite superior. Em parcelas com
+  duas vias habilitantes e declive, o envelope escalona.
+papel_no_intervalo: base

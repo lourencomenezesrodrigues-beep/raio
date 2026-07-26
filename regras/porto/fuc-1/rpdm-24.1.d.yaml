@@ -1,0 +1,26 @@
+id: rpdm-24.1.d
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea d)"
+categoria: frente_urbana_continua_tipo_I
+tema: profundidade_maxima
+texto: >
+  No piso situado à cota do logradouro, admite-se o prolongamento
+  construtivo do edifício, não podendo ultrapassar a profundidade de 25
+  metros medidos a partir do alinhamento da frente urbana e quando não
+  resulte num índice de impermeabilização superior a 0,7 da área da
+  parcela.
+parametros:
+  profundidade_max_m: 25
+  origem_medicao: alinhamento_frente_urbana_dominante
+  indice_impermeabilizacao_max: 0.7
+clarificacoes:
+  - fonte: "Newsletter 11/2025"
+    nota: >
+      Os 25 m medem-se do alinhamento da frente urbana dominante e não da
+      fachada, se recuada. Se a cota do logradouro preexistente estiver
+      acima do piso 1, o prolongamento desenvolve-se no piso a essa cota;
+      construções abaixo dessa cota podem enquadrar-se na alínea c).
+computabilidade: automatica
+entradas: [poligono_parcela, alinhamento_frente_dominante]
+efeito: limita a profundidade do envelope no piso à cota do logradouro
+papel_no_intervalo: base

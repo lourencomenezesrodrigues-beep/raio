@@ -1,0 +1,24 @@
+id: rpdm-24.1.c
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea c)"
+categoria: frente_urbana_continua_tipo_I
+tema: cave_alem_do_tardoz
+texto: >
+  Admite-se a construção em cave, para além do plano da fachada de tardoz
+  do corpo dominante, quando não resulte num índice de impermeabilização
+  superior a 0,7 da área da parcela, e desde que esta se situe abaixo da
+  cota do logradouro.
+parametros:
+  indice_impermeabilizacao_max: 0.7
+  condicao: abaixo_da_cota_do_logradouro
+clarificacoes:
+  - fonte: "Newsletter 11/2025"
+    nota: >
+      Aplica-se a piscinas descobertas abaixo do piso 1 ou da cota do
+      terreno confinante; a área da piscina conta para a impermeabilização.
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Permite área em cave para lá do tardoz (não conta para a cércea);
+  contribui para a capacidade abaixo do solo, reportada em separado.
+papel_no_intervalo: nota

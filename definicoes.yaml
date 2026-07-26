@@ -1,0 +1,33 @@
+fonte: "RPDM, Artigo 3.º (com anotações do RPDM comentado)"
+definicoes:
+  frente_urbana: >
+    Plano definido pelo conjunto das fachadas dos edifícios confinantes com
+    uma dada via pública e compreendido entre duas vias públicas sucessivas
+    que o intersetam. [Só as fachadas de um dos lados do espaço público —
+    RPDM comentado, anotação 7.]
+  moda_da_cercea: >
+    A cércea que apresenta maior extensão ao longo de uma frente urbana
+    edificada. [Cálculo: somar comprimentos de fachada por valor de cércea
+    e escolher o valor dominante — ponderação por extensão, não por número
+    de edifícios.]
+  cercea: >
+    Dimensão vertical da construção, medida do ponto de cota média do
+    terreno marginal ao alinhamento da fachada até à linha superior do
+    beirado, platibanda ou guarda de terraço, incluindo andares recuados,
+    excluindo acessórios (chaminés, casas de máquinas, depósitos).
+    [Excluem-se guarda-corpos em vidro; incluem-se guardas de terraço
+    opacas — RPDM comentado, anotação 5.]
+  parcela: >
+    Área de território delimitada física, jurídica ou topologicamente, não
+    resultante de operação de loteamento, correspondente ao prédio ou
+    conjunto de prédios objecto de uma operação urbanística.
+  piso_1: >
+    Pavimento com diferença altimétrica até 1,20 m em relação à via pública
+    ou à cota do terreno confinante, medida no ponto médio da frente
+    principal (cota de soleira).
+  cave: >
+    Edificação abaixo do piso 1 ou da cota do terreno confinante com a via
+    pública.
+  corpo_dominante: >
+    Volume principal do conjunto edificado, erigido ou a erigir no prédio.
+    [Excluem-se varandas e elementos acessórios — anotação 6.]

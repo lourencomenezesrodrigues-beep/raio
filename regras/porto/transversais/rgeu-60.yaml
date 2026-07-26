@@ -1,0 +1,26 @@
+id: rgeu-60
+diploma: RGEU (DL 38 382/1951, versão consolidada 29/05/2026)
+norma: "Artigo 60.º"
+categoria: transversal
+condicao_aplicacao: fachadas_com_vaos_de_compartimentos_de_habitacao
+tema: distancia_minima_entre_fachadas
+texto: >
+  Independentemente do estabelecido no artigo anterior, a distância mínima
+  entre fachadas de edificações nas quais existam vãos de compartimentos
+  de habitação não poderá ser inferior a 10 metros.
+  § único. Tratando-se de arruamentos já ladeados, no todo ou na maior
+  parte, por edificações, as câmaras municipais poderão estabelecer
+  alinhamentos com menor intervalo, não inferior, contudo, ao definido
+  pelas construções existentes.
+parametros:
+  distancia_min_m: 10
+  excecao: arruamentos_ja_ladeados -> alinhamento_das_construcoes_existentes
+computabilidade: automatica_com_edificado
+entradas: [alinhamentos_fachadas_fronteiras, profundidade_envelope]
+efeito: >
+  Piso mínimo de 10 m entre fachadas habitacionais com vãos: verifica-se a
+  tardoz (entre o envelope e o edificado fronteiro do interior do
+  quarteirão) e complementa os 45º do 59.º. Em frentes urbanas
+  consolidadas com intervalos menores, o § único remete para o alinhamento
+  existente: a ficha assinala em vez de bloquear.
+papel_no_intervalo: base

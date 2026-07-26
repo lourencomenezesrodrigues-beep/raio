@@ -1,0 +1,25 @@
+id: rpdm-24.1.f
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea f)"
+categoria: frente_urbana_continua_tipo_I
+tema: cobertura_inclinada
+texto: >
+  Na solução de cobertura inclinada, com uma das águas com pendente para o
+  arruamento, o arranque da laje de cobertura deve coincidir com a inserção
+  entre planos de fachada e a laje de teto do último piso e a sua
+  inclinação não deve ser superior a 30º.
+parametros:
+  inclinacao_max_graus: 30
+clarificacoes:
+  - fonte: "Newsletter 12/2025"
+    nota: >
+      Quando o último piso é vão de telhado com pé direito regulamentar, a
+      laje de tecto desse piso é a laje de cobertura. A norma aplica-se
+      apenas à fachada principal confinante com o arruamento; a tardoz
+      exige-se correcta articulação volumétrica com os confinantes.
+computabilidade: semi
+entradas: []
+efeito: >
+  Condiciona a forma da cobertura, não a capacidade em planta; entra na
+  ficha como regra de projecto, sem alterar o intervalo.
+papel_no_intervalo: nota

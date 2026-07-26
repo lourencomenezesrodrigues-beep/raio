@@ -1,0 +1,33 @@
+id: rpdm-30.1.d
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 30.º, n.º 1, alínea d)"
+categoria: edificios_tipo_moradia
+tema: afastamento_pisos_superiores
+texto: >
+  Os pisos superiores do edifício devem garantir um afastamento aos
+  limites do prédio, igual ou superior à metade da sua altura, com o
+  mínimo de 3 metros, exceto nas situações de colmatação de empena
+  constituídas, ou que venham a ser constituídas nas parcelas confinantes.
+parametros:
+  afastamento_min: max(metade_da_altura_dos_pisos_superiores, 3 m)
+  excecao: colmatacao_de_empena
+clarificacoes:
+  - fonte: "CRMP B-1/2.º-A, n.º 4 e B-1/2.º, n.º 3"
+    nota: >
+      O afastamento só se aplica às obras para além do alinhamento de
+      tardoz do corpo dominante dos edifícios contíguos a manter
+      (salvaguarda de insolação e ventilação dos logradouros vizinhos).
+      A altura dos pisos superiores conta-se da laje de tecto do piso 1
+      até à cornija/platibanda, incluindo recuados.
+  - fonte: "RPDM comentado, anotação 3 ao art. 30.º"
+    nota: >
+      O piso à cota do logradouro não conta para a aferição da altura e
+      pode estender-se até aos limites prediais.
+computabilidade: automatica
+entradas: [poligono_parcela, alinhamento_tardoz_contiguos]
+efeito: >
+  Encolhe a implantação dos pisos superiores para além do tardoz dos
+  contíguos: afastamento aos limites >= max(altura/2, 3 m). Com pé direito
+  de 3 m e 2 pisos superiores (~6 m acima da laje do piso 1), afastamento
+  típico de 3 m. A excepção de empena confinante alarga o limite superior.
+papel_no_intervalo: base

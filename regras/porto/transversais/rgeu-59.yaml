@@ -1,0 +1,40 @@
+id: rgeu-59
+diploma: RGEU (DL 38 382/1951, versão consolidada 29/05/2026)
+norma: "Artigo 59.º"
+categoria: transversal
+tema: regra_dos_45_graus
+texto: >
+  A altura de qualquer edificação será fixada de forma que em todos os
+  planos verticais perpendiculares à fachada nenhum dos seus elementos,
+  com excepção de chaminés e acessórios decorativos, ultrapasse o limite
+  definido pela linha recta a 45 graus, traçada em cada um desses planos a
+  partir do alinhamento da edificação fronteira, definido pela intersecção
+  do seu plano com o terreno exterior.
+  § 1.º Em terrenos em declive, tolerância de altura até 1,50 m na parte
+  descendente a partir do plano médio.
+  § 2.º Nos edifícios de gaveto formado por dois arruamentos de largura ou
+  níveis diferentes, a fachada sobre o arruamento mais estreito ou mais
+  baixo poderá elevar-se até à altura permitida para o outro arruamento,
+  na extensão máxima de 15 metros.
+  § 4.º Em interrupção de continuidade numa fila de construções, o
+  intervalo entre as duas edificações confinantes pode ser igual à média
+  das suas alturas, sem prejuízo do artigo 60.º.
+parametros:
+  angulo_graus: 45
+  origem: alinhamento_da_edificacao_fronteira_ao_nivel_do_terreno
+  tolerancia_declive_m: 1.5
+  gaveto_extensao_max_m: 15
+computabilidade: automatica_com_edificado
+entradas: [alinhamento_edificacao_fronteira, largura_espaco_entre_alinhamentos]
+efeito: >
+  Tecto de altura adicional ao das regras do RPDM: na prática, a altura no
+  plano da fachada não excede a distância ao alinhamento fronteiro. O
+  envelope final usa a cércea mínima entre a moda (RPDM) e a linha dos
+  45º (RGEU): prevalece a mais restritiva. O § 2.º dá um gatilho objectivo
+  nos gavetos (15 m de extensão à altura da rua mais larga).
+papel_no_intervalo: base
+clarificacoes:
+  - fonte: "RGEU art. 60.º (norma associada)"
+    nota: >
+      Independentemente dos 45º, a distância mínima entre fachadas com
+      vãos de compartimentos de habitação não pode ser inferior a 10 m.

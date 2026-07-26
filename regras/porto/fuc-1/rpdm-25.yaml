@@ -1,0 +1,20 @@
+id: rpdm-25
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 25.º"
+categoria: frente_urbana_continua_tipo_I
+tema: logradouros_permeabilidade
+texto: >
+  Os logradouros e interior dos quarteirões devem ser permeáveis, sendo
+  ocupados por coberto vegetal, admitindo-se a criação de espaços de
+  circulação e de estadia, e/ou um anexo com o máximo de 10 m2, desde que
+  não comprometam a existência de um índice de permeabilidade de 0,3
+  relativo à parcela.
+parametros:
+  indice_permeabilidade_min: 0.3
+  anexo_max_m2: 10
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Restringe a implantação: no mínimo 30% da parcela permanece permeável.
+  Verificação cruzada com os 0,7 de impermeabilização das alíneas c) e d).
+papel_no_intervalo: base

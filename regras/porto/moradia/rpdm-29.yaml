@@ -1,0 +1,31 @@
+id: rpdm-29
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 29.º"
+categoria: edificios_tipo_moradia
+tema: ambito_e_objetivos
+texto: >
+  As áreas reguladas na presente subsecção correspondem às zonas em que o
+  tipo de edifício predominante possui até três pisos e logradouro com
+  coberto vegetal permeável, que deve ser mantido como tal, ou às áreas
+  para as quais o PDMP impõe essa mesma tipologia.
+clarificacoes:
+  - fonte: "RPDM art. 17.º, n.º 2 (espaços centrais)"
+    nota: >
+      Sendo subcategoria dos espaços centrais, admite a coexistência de
+      vários usos urbanos: habitação, comércio, equipamentos, serviços,
+      atividades turísticas, indústria e logística, desde que compatíveis.
+  - fonte: "Revisão do autor (Julho 2026)"
+    nota: >
+      A nomenclatura induz em erro e tem sido tema de debate na própria
+      CMP: "tipo moradia" não obriga ao uso de moradia. É uma
+      classificação morfológica (edifício até três pisos com logradouro
+      permeável), não uma restrição de uso: admite-se qualquer uso
+      compatível, incluindo, por exemplo, escritórios.
+computabilidade: semi
+entradas: [categoria_solo]
+efeito: >
+  Contexto interpretativo: "tipo moradia" define a morfologia a manter
+  (até três pisos, logradouro permeável), não o uso. A ficha deve dizê-lo
+  explicitamente, para evitar a leitura errada de que só se admitem
+  moradias: qualquer uso compatível do art. 17.º n.º 2 é admissível.
+papel_no_intervalo: nota

@@ -1,0 +1,15 @@
+id: rpdm-30.3
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 30.º, n.º 3"
+categoria: edificios_tipo_moradia
+tema: excecao_uopg
+texto: >
+  O número máximo de pisos acima do solo previsto na alínea c) do n.º 1
+  pode ser superior no âmbito da concretização de uma UOPG.
+computabilidade: apreciacao
+entradas: [uopg_aplicavel]
+efeito: >
+  Se a parcela estiver dentro de uma UOPG (camada disponível na carta de
+  qualificação), a ficha assinala que o tecto de pisos pode ser superior
+  no âmbito da sua concretização: "carece de análise", sem número.
+papel_no_intervalo: excecao_superior

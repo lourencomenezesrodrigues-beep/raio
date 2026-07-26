@@ -1,0 +1,21 @@
+id: rpdm-30.1.b
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 30.º, n.º 1, alínea b)"
+categoria: edificios_tipo_moradia
+tema: impermeabilizacao
+texto: >
+  O índice máximo de impermeabilização é de 0,6 da área da parcela,
+  devendo a área remanescente ser ocupada por coberto vegetal e espaços de
+  circulação e de estadia permeáveis, exceto as obras de edificação em
+  parcelas de muito reduzidas dimensões, nas quais seja necessário
+  garantir condições mínimas de habitabilidade.
+parametros:
+  indice_impermeabilizacao_max: 0.6
+  excecao: parcelas_de_muito_reduzidas_dimensoes
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Tecto duro da implantação e áreas pavimentadas: no máximo 60% da parcela
+  impermeável. A excepção das parcelas muito reduzidas não tem limiar
+  quantificado: quando a parcela for pequena, assinalar como argumentável.
+papel_no_intervalo: base

@@ -1,0 +1,20 @@
+id: rpdm-30.2
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 30.º, n.º 2"
+categoria: edificios_tipo_moradia
+tema: parcelas_grandes_implantacao_livre
+texto: >
+  Excetuam-se da alínea a) do número anterior as parcelas com área
+  superior a 2000 m2, admite-se qualquer implantação, desde que garantidas
+  as formas de relação das frentes da parcela confinantes com o espaço
+  público que se mostrem dominantes na frente urbana onde se localiza a
+  parcela.
+parametros:
+  area_parcela_min_m2: 2000
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Gatilho objectivo: parcela > 2000 m² liberta o alinhamento frontal
+  (implantação livre), mantendo as demais regras (0,6; 3 pisos;
+  afastamentos). A ficha muda o desenho do envelope nesses casos.
+papel_no_intervalo: base

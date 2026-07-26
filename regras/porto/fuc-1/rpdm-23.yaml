@@ -1,0 +1,28 @@
+id: rpdm-23
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 23.º"
+categoria: frente_urbana_continua_tipo_I
+tema: ambito_e_objetivos
+texto: >
+  1. As áreas de frente urbana contínua do tipo I correspondem às áreas
+  organizadas em quarteirão, com edifícios localizados, predominantemente,
+  à face dos arruamentos, em que o espaço público e as frentes urbanas
+  edificadas que o conformam se apresentam estabilizados, pretendendo-se a
+  manutenção e valorização das malhas e morfologia existentes.
+  2. Compreendendo essencialmente quarteirões construídos nos séculos
+  XVIII, XIX ou início do século XX da zona central da cidade, estas áreas
+  integram edifícios significativos e conjuntos de edifícios com interesse
+  patrimonial, pelo que as intervenções devem privilegiar a preservação e
+  requalificação dos edifícios existentes.
+computabilidade: semi
+entradas: [categoria_solo]
+efeito: >
+  Contexto interpretativo: preservação é o objectivo; a ficha deve avisar
+  que edifícios existentes com interesse patrimonial condicionam demolição
+  e nova construção (cruzar com Carta de Património).
+papel_no_intervalo: nota
+clarificacoes:
+  - fonte: "CRMP, Parte B definições"
+    nota: >
+      Para efeitos do art. 4.º n.º 4 d) do RJUE, apenas as Áreas de Frente
+      Urbana Contínua de Tipo I são zonas urbanas consolidadas.

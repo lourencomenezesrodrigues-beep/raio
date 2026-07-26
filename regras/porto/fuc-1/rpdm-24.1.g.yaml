@@ -1,0 +1,25 @@
+id: rpdm-24.1.g
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea g)"
+categoria: frente_urbana_continua_tipo_I
+tema: excecao_cercea_colmatacao
+texto: >
+  Excecionalmente, admitem-se cérceas superiores à moda da cércea da frente
+  urbana, desde que para colmatar empenas de edifícios existentes a manter
+  e garantam uma correta articulação volumétrica com os mesmos.
+parametros:
+  gatilho: empena_exposta_em_edificio_confinante_a_manter
+computabilidade: apreciacao
+entradas: [alturas_edificios_confinantes]
+efeito: >
+  Quando o modelo de alturas detecta empena confinante acima da moda,
+  activa o limite superior do intervalo (cércea até à empena a colmatar).
+  A aceitação é discricionária: reportar como "argumentável".
+papel_no_intervalo: excecao_superior
+clarificacoes:
+  - fonte: "CRMP, Parte B, definição de espaço de colmatação"
+    nota: >
+      O CRMP define espaço de colmatação: prédio entre dois edifícios de
+      referência a distância não superior a 24 m (alturas até 16 m) ou 1,5
+      vezes a maior das alturas (acima de 16 m), até 30 m de extensão.
+      Usar como teste objectivo de plausibilidade da excepção.

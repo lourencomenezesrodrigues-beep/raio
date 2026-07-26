@@ -1,0 +1,40 @@
+id: rgeu-62
+diploma: RGEU (DL 38 382/1951, versão consolidada 29/05/2026)
+norma: "Artigo 62.º"
+categoria: transversal
+condicao_aplicacao: uso_habitacao_multifamiliar_ou_coletiva
+tema: logradouro_minimo_habitacao_coletiva
+texto: >
+  As edificações para habitação multifamiliar ou colectiva deverão
+  dispor-se nos respectivos lotes de forma que o menor intervalo entre
+  fachadas posteriores esteja de acordo com o estabelecido no artigo 59.º.
+  § 1.º Sempre que não tenha sido organizado logradouro comum que assegure
+  a condição estabelecida, cada edificação deverá ser provida de um
+  logradouro próprio, com toda a largura do lote e com fácil acesso do
+  exterior.
+  § 2.º O logradouro deverá ter em todos os seus pontos profundidade não
+  inferior a metade da altura correspondente da fachada adjacente, medida
+  na perpendicular a esta fachada no ponto mais desfavorável, com o mínimo
+  de 6 metros e sem que a área livre e descoberta seja inferior a 40
+  metros quadrados.
+  § 3.º Nos prédios de gaveto poderão dispensar-se as condições de largura
+  e profundidade mínima desde que fiquem satisfatoriamente asseguradas a
+  iluminação, ventilação e insolação da própria edificação e das
+  contíguas.
+parametros:
+  localizacao: tardoz
+  largura: toda_a_largura_do_lote
+  profundidade_min: max(metade_da_altura_da_fachada_adjacente, 6 m)
+  ponto_de_medicao: o_mais_desfavoravel
+  area_livre_descoberta_min_m2: 40
+  excecao: gaveto_com_salubridade_assegurada
+computabilidade: automatica
+entradas: [poligono_parcela, profundidade_envelope, cercea_envelope, uso_previsto]
+efeito: >
+  Quando o uso é habitação colectiva, corta a profundidade do envelope:
+  a profundidade útil passa a ser o mínimo entre a regra da categoria
+  (ex.: 25 m na FUC-I) e a profundidade da parcela menos max(6 m,
+  altura/2), verificando ainda os 40 m² livres a tardoz. Em parcelas
+  pouco profundas, esta é frequentemente a regra determinante da
+  capacidade, acima das do RPDM.
+papel_no_intervalo: base

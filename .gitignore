@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Dados / geopackages (grandes, não versionar)
+*.gpkg
+*.gpkg-shm
+*.gpkg-wal
+dados/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

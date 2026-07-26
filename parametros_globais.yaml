@@ -1,0 +1,11 @@
+pe_direito_assumido_m: 3.0
+nota_pe_direito: >
+  Conversão cércea/pisos por omissão; ajustável pelo utilizador na ficha.
+  Base legal: RGEU art. 65.º fixa a altura mínima piso a piso em habitação
+  nos 2,70 m; 3,0 m é o valor corrente com folga construtiva.
+tolerancia_cercea: >
+  A moda da cércea derivada de dados de alturas (LiDAR/Overture/OSM) é
+  arredondada ao múltiplo de 3 m mais próximo. As alturas medidas ao topo
+  do volume podem incluir elementos que o art. 3.º g) exclui (chaminés,
+  casas de máquinas); a tolerância absorve esse desvio e é declarada na ficha.
+sistema_coordenadas: EPSG:3763 (ETRS89/PT-TM06)

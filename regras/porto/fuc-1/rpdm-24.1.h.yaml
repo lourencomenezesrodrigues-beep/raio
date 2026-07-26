@@ -1,0 +1,21 @@
+id: rpdm-24.1.h
+diploma: RPDM (2.ª alteração, Abril 2025)
+norma: "Artigo 24.º, n.º 1, alínea h)"
+categoria: frente_urbana_continua_tipo_I
+tema: parcela_de_gaveto
+texto: >
+  Na construção de novos edifícios ou ampliação de edifícios existentes,
+  em parcela de gaveto, deverão privilegiar-se soluções arquitetónicas
+  adequadas ao conveniente remate urbano das respetivas frentes,
+  dispensando-se, se necessário, do cumprimento do disposto nas alíneas
+  b), c) e d) deste número.
+parametros:
+  dispensa_possivel: [rpdm-24.1.b, rpdm-24.1.c, rpdm-24.1.d]
+computabilidade: apreciacao
+entradas: [geometria_parcela, vias_confinantes]
+efeito: >
+  Detecção automática do gaveto (parcela com duas ou mais frentes para
+  vias que se intersectam). Quando presente, a ficha assinala que os
+  limites de tardoz e profundidade podem ser dispensados: alarga o limite
+  superior do intervalo e exige análise.
+papel_no_intervalo: excecao_superior
