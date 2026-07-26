@@ -60,8 +60,32 @@ def test_analisar_ponto_sem_regras_com_aviso():
     # a condicionante de âmbito municipal não polui as efetivas
     assert [c["camada"] for c in r["condicionantes_efetivas"]] == ["Património edificado"]
 
+def test_metricas_parcela_alinhada():
+    import parcela
+    from shapely.geometry import LineString, Polygon
+    eixo = LineString([(0, 0), (100, 0)])          # rua ao longo de x
+    # parcela: frente 10 m (x 40..50), profundidade 20 m (y 5..25)
+    poly = Polygon([(40, 5), (50, 5), (50, 25), (40, 25)])
+    m = parcela.metricas_de_poligono(poly, eixo=eixo)
+    assert m["area_m2"] == 200.0
+    assert m["frente_m"] == 10.0
+    assert m["profundidade_m"] == 20.0
+
+def test_metricas_parcela_rodada():
+    import parcela, math
+    from shapely.geometry import LineString, Polygon
+    from shapely.affinity import rotate
+    eixo = LineString([(0, 0), (100, 100)])        # rua a 45°
+    poly = rotate(Polygon([(40, 5), (50, 5), (50, 25), (40, 25)]),
+                  45, origin=(0, 0))               # parcela rodada igual
+    m = parcela.metricas_de_poligono(poly, eixo=eixo)
+    assert m["area_m2"] == 200.0
+    assert abs(m["frente_m"] - 10.0) < 0.1
+    assert abs(m["profundidade_m"] - 20.0) < 0.1
+
 if __name__ == "__main__":
     test_regras_carregam(); test_caso_sintetico()
     test_moradia_sintetico(); test_moradia_parcela_grande()
     test_analisar_ponto_despacho_fuc1(); test_analisar_ponto_sem_regras_com_aviso()
+    test_metricas_parcela_alinhada(); test_metricas_parcela_rodada()
     print("todos os testes passam")

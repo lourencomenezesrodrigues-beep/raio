@@ -55,16 +55,17 @@ def _lado_sinal(linha, p):
     return 1.0 if (dx * (p.y - a.y) - dy * (p.x - a.x)) >= 0 else -1.0
 
 
-def frente_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0, buffer_m=12.0):
-    """Devolve dict: rua, comprimento_frente_m, n_edificios, fonte_cercea, moda."""
-    bbox = _bbox_wgs84(x, y, raio_m)
-    ruas = overture.ruas_bbox(bbox)
-    edif = overture.edificado_bbox(bbox)
+def eixo_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0):
+    """Lanço do eixo da rua fronteira ao ponto (janela ~ quarteirão).
+
+    Devolve {"lanco": LineString, "rua": str|None} ou None se não há ruas.
+    Reutilizado pelo cálculo da moda (frente_no_ponto) e das métricas da
+    parcela (motor.parcela).
+    """
+    ruas = overture.ruas_bbox(_bbox_wgs84(x, y, raio_m))
     P = Point(x, y)
     if ruas.empty:
-        return {"erro": "sem ruas Overture no raio", "moda": None}
-
-    # rua fronteira = segmento mais próximo; junta segmentos do mesmo nome
+        return None
     ruas = ruas.copy()
     ruas["d"] = ruas.geometry.distance(P)
     perto = ruas.sort_values("d").iloc[0]
@@ -78,17 +79,25 @@ def frente_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0, buffer_m=12.0):
         eixo = min(merged.geoms, key=lambda l: l.distance(P))
     else:
         eixo = merged
-
-    # janela ~ um quarteirão, centrada na projecção do ponto
     s = eixo.project(P)
     lanco = substring(eixo, max(s - janela_m, 0.0), min(s + janela_m, eixo.length))
+    return {"lanco": lanco, "rua": nome}
+
+
+def frente_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0, buffer_m=12.0):
+    """Devolve dict: rua, comprimento_frente_m, n_edificios, fonte_cercea, moda."""
+    ei = eixo_no_ponto(x, y, raio_m=raio_m, janela_m=janela_m)
+    if ei is None:
+        return {"erro": "sem ruas Overture no raio", "moda_cercea_m": None}
+    lanco, nome = ei["lanco"], ei["rua"]
+    P = Point(x, y)
+    edif = overture.edificado_bbox(_bbox_wgs84(x, y, raio_m))
+    if edif.empty:
+        return {"rua": nome, "moda_cercea_m": None, "erro": "sem edificado"}
 
     # corredor unilateral para o lado do ponto
     dist = buffer_m * _lado_sinal(lanco, P)
     corredor = lanco.buffer(dist, single_sided=True)
-
-    if edif.empty:
-        return {"rua": nome, "moda": None, "erro": "sem edificado"}
     sel = edif[edif.geometry.intersects(corredor)]
 
     frentes = []

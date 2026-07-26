@@ -246,6 +246,23 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
     return out
 
 
+def analisar_parcela(poligono, *, auto_moda=True, extra=None, consulta=None):
+    """Análise a partir do polígono da parcela (EPSG:3763, shapely ou WKT).
+
+    Deriva área/frente/profundidade do polígono (motor.parcela), resolve a
+    categoria no centróide e calcula o intervalo. `extra` acrescenta campos à
+    parcela (ex.: uso_habitacao_coletiva, colmatacao_consolidado, gaveto).
+    """
+    import parcela as _parcela
+    from shapely import wkt as _wkt
+    poly = _wkt.loads(poligono) if isinstance(poligono, str) else poligono
+    c = poly.centroid
+    parcela, metricas = _parcela.parcela_para_engine(poly, extra=extra)
+    out = analisar_ponto(c.x, c.y, parcela, consulta=consulta, auto_moda=auto_moda)
+    out["parcela_metricas"] = metricas
+    return out
+
+
 if __name__ == "__main__":
     from pprint import pprint
     print("### FUC-I (inputs sintéticos)")
