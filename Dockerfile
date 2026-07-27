@@ -9,11 +9,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# código e dados de runtime (regras, definições, web)
+# código e dados de runtime (regras, definições, web, cartografia PDM embutida)
 COPY app.py definicoes.yaml parametros_globais.yaml ./
 COPY motor/ motor/
 COPY regras/ regras/
 COPY web/ web/
+COPY dados_pdm/ dados_pdm/
 
 ENV RAIO_HOST=0.0.0.0
 EXPOSE 8765

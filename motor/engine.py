@@ -372,6 +372,17 @@ _COND_AMBITO_MUNICIPAL = {
 }
 
 
+def _norm_cond(s):
+    """Normaliza o nome de uma camada para comparar entre fontes (serviço
+    ArcGIS com rótulos vs. gpkg com underscores/parênteses)."""
+    s = (s or "").lower().replace("_", " ")
+    s = s.replace("(", " ").replace(")", " ")
+    return " ".join(s.split())
+
+
+_COND_AMBITO_MUNICIPAL_N = {_norm_cond(x) for x in _COND_AMBITO_MUNICIPAL}
+
+
 def _limpa_designacao(d):
     """Descarta designações que são só um GUID (sem nome útil)."""
     if not d or not isinstance(d, str):
@@ -389,7 +400,7 @@ def _condicionantes_para_avisos(condicionantes):
         item = {"camada": camada, "layer_id": c.get("layer_id"),
                 "designacao": _limpa_designacao(c.get("designacao")),
                 "legislacao": c.get("legislacao")}
-        if camada in _COND_AMBITO_MUNICIPAL:
+        if _norm_cond(camada) in _COND_AMBITO_MUNICIPAL_N:
             municipais.append(item)
             continue
         efetivas.append(item)
@@ -416,7 +427,7 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
     (motor.frente) e preenche `moda_cercea_m` se a parcela não o trouxer.
     """
     if consulta is None:
-        import pdm_arcgis
+        import pdm_local as pdm_arcgis
         consulta = pdm_arcgis.consultar_ponto(x, y)
 
     slug = consulta.get("categoria_slug")
@@ -534,7 +545,7 @@ def analisar_parcela(poligono, *, auto_moda=True, extra=None, consulta=None):
     parcela (ex.: uso_habitacao_coletiva, colmatacao_consolidado, gaveto).
     """
     import parcela as _parcela
-    import pdm_arcgis
+    import pdm_local as pdm_arcgis
     from shapely import wkt as _wkt
     poly = _wkt.loads(poligono) if isinstance(poligono, str) else poligono
     c = poly.centroid
