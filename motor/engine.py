@@ -255,6 +255,12 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
         if finfo.get("moda_cercea_m") and not parcela.get("moda_cercea_m"):
             parcela = {**parcela, "moda_cercea_m": finfo["moda_cercea_m"]}
 
+    # FUC-I depende sempre da moda da cércea; se indeterminável, não a inventamos
+    if slug == "frente_urbana_continua_tipo_I" and not parcela.get("moda_cercea_m"):
+        out["estado"] = ("moda da cércea indeterminada (sem edificado detectado na "
+                         "frente do ponto) — forneça moda_cercea_m para o cálculo")
+        return out
+
     out["capacidade"] = fn(parcela)
     out["estado"] = "ok"
     return out

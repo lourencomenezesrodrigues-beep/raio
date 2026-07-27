@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAIO — pesquisa de terreno</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --paper:#eef1f3; --surface:#fcfdfe; --ink:#191d21; --muted:#5d6773;
+    --line:#d7dde2; --line-strong:#c2cad1; --accent:#1e5a82; --accent-soft:#e6eef4;
+    --warn:#8a5a12; --warn-stripe:#c8912b; --warn-bg:#f8f1e0;
+    --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{display:flex;font-family:var(--font-sans);color:var(--ink);background:var(--paper)}
+  #painel{width:360px;flex:none;height:100%;overflow-y:auto;border-right:1px solid var(--line);
+    background:var(--surface);display:flex;flex-direction:column}
+  #mapa{flex:1;height:100%}
+  .cab{padding:18px 18px 12px;border-bottom:1px solid var(--line)}
+  .logo{font-family:var(--font-mono);font-weight:700;font-size:22px;letter-spacing:.05em;
+    border:2px solid var(--ink);display:inline-block;padding:4px 10px 3px;border-radius:3px;line-height:1}
+  .logo .dot{color:var(--accent)}
+  .sub{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin-top:8px}
+  form{display:flex;gap:6px;padding:14px 18px}
+  input{flex:1;font-family:var(--font-sans);font-size:14px;padding:9px 11px;border:1px solid var(--line-strong);
+    border-radius:3px;background:var(--surface);color:var(--ink)}
+  input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+  button{font-family:var(--font-mono);font-size:12px;letter-spacing:.03em;padding:9px 12px;cursor:pointer;
+    border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:3px}
+  button:active{transform:scale(.97)}
+  .cands{padding:0 18px}
+  .cand{padding:9px 10px;border:1px solid var(--line);border-radius:3px;margin-bottom:6px;cursor:pointer;
+    font-size:13px}
+  .cand:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .cand .t{font-weight:600}
+  .cand .c{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+  #res{padding:16px 18px;flex:1}
+  .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .cat{font-family:var(--font-mono);font-weight:700;text-transform:uppercase;font-size:16px;margin:4px 0 2px;line-height:1.25}
+  .cod{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+  .badge{display:inline-block;font-family:var(--font-mono);font-size:11px;padding:2px 8px;border-radius:2px;margin-top:8px}
+  .badge.ok{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+  .badge.no{background:#f0f0f0;color:var(--muted);border:1px solid var(--line-strong)}
+  .sec{margin-top:18px}
+  .sec>.k{margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .cond{border:1px solid var(--line);border-left:3px solid var(--line-strong);border-radius:2px;
+    padding:9px 11px;margin-bottom:7px;font-size:13px}
+  .cond.warn{border-left-color:var(--warn-stripe);background:var(--warn-bg)}
+  .cond .l{font-weight:600}
+  .cond .d{color:var(--muted);font-size:12px;margin-top:2px}
+  .muted{color:var(--muted);font-size:13px}
+  .mun{font-size:12px;color:var(--muted);margin-top:4px}
+  .ficha-btn{display:block;width:100%;text-align:center;margin-top:16px;background:var(--surface);
+    color:var(--accent);border:1px solid var(--accent);text-decoration:none;padding:10px;border-radius:3px;
+    font-family:var(--font-mono);font-size:12px}
+  .hint{padding:16px 18px;color:var(--muted);font-size:13px;line-height:1.5}
+  .leaflet-container{background:#dfe4e8}
+</style>
+</head>
+<body>
+  <div id="painel">
+    <div class="cab">
+      <span class="logo">RAIO<span class="dot">.</span></span>
+      <div class="sub">Pesquisa de terreno · Porto</div>
+    </div>
+    <form id="busca">
+      <input id="q" placeholder="Morada (ex.: Rua de Santa Catarina 200)" autocomplete="off">
+      <button type="submit">Ir</button>
+    </form>
+    <div class="cands" id="cands"></div>
+    <div id="res"><div class="hint">Pesquise uma morada ou clique no mapa para ver a
+      categoria de solo e as condicionantes de um ponto.</div></div>
+  </div>
+  <div id="mapa"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<script>
+const PDM = "https://fedservergeo.cm-porto.pt/arcgis/rest/services/PDM2021";
+const CART = "https://fedservergeo.cm-porto.pt/arcgis/rest/services/Cartografia";
+
+const map = L.map("mapa", {zoomControl:true}).setView([41.1496,-8.6109], 14);
+const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {maxZoom:19, attribution:"© OpenStreetMap"}).addTo(map);
+const cmp = L.esri.dynamicMapLayer({url:`${CART}/Mapa_Base_Cache/MapServer`, opacity:1});
+const qualif = L.esri.dynamicMapLayer({url:`${PDM}/PO1A_QS/MapServer`, layers:[8], opacity:0.45}).addTo(map);
+const cond = L.esri.dynamicMapLayer({url:`${PDM}/CCGD_PUBLICACAO/MapServer`, opacity:0.55});
+L.control.layers(
+  {"OpenStreetMap":osm, "Cartografia CMP":cmp},
+  {"Qualificação do solo":qualif, "Condicionantes":cond},
+  {collapsed:false}).addTo(map);
+
+let marca = null;
+function ponto(lat, lon){
+  if(marca) marca.setLatLng([lat,lon]); else marca = L.marker([lat,lon]).addTo(map);
+  analisar(lat, lon);
+}
+map.on("click", e => { ponto(e.latlng.lat, e.latlng.lng); });
+
+document.getElementById("busca").addEventListener("submit", async e => {
+  e.preventDefault();
+  const q = document.getElementById("q").value.trim();
+  const cds = document.getElementById("cands");
+  if(!q){ cds.innerHTML=""; return; }
+  cds.innerHTML = '<div class="muted" style="padding:0 0 8px">A procurar…</div>';
+  try{
+    const r = await fetch(`/api/geocode?q=${encodeURIComponent(q)}`);
+    const {candidatos} = await r.json();
+    if(!candidatos.length){ cds.innerHTML='<div class="muted" style="padding:0 0 10px">Sem resultados no Porto.</div>'; return; }
+    cds.innerHTML = candidatos.map((c,i)=>
+      `<div class="cand" data-i="${i}"><div class="t">${(c.label||"").split(",")[0]}</div>
+       <div class="c">${c.x.toFixed(0)}, ${c.y.toFixed(0)} · ${(c.label||"").slice(0,60)}</div></div>`).join("");
+    [...cds.querySelectorAll(".cand")].forEach(el=>el.onclick=()=>{
+      const c = candidatos[+el.dataset.i];
+      map.setView([c.lat,c.lon], 17); ponto(c.lat, c.lon); cds.innerHTML="";
+    });
+  }catch(err){ cds.innerHTML=`<div class="muted">Erro: ${err}</div>`; }
+});
+
+async function analisar(lat, lon){
+  const res = document.getElementById("res");
+  res.innerHTML = '<div class="muted">A analisar o ponto…</div>';
+  try{
+    const r = await fetch(`/api/analisar?lat=${lat}&lon=${lon}`);
+    const d = await r.json();
+    if(d.erro){ res.innerHTML=`<div class="muted">Erro: ${d.erro}</div>`; return; }
+    render(d, lat, lon);
+  }catch(err){ res.innerHTML=`<div class="muted">Erro: ${err}</div>`; }
+}
+
+function render(d, lat, lon){
+  const efet = d.condicionantes_efetivas||[], mun = d.condicionantes_ambito_municipal||[];
+  const warnKeys = ["patrim","imóveis classificados","hídric","domínio público","servidão","non aedificandi"];
+  const isWarn = c => warnKeys.some(k => (c.camada||"").toLowerCase().includes(k));
+  const slug = d.categoria_slug;
+  const badge = slug
+    ? `<span class="badge ok">regras: ${slug}</span>`
+    : `<span class="badge no">categoria sem regras — carece de análise</span>`;
+  let h = `<div class="k">Categoria de solo</div>
+    <div class="cat">${d.categoria||"—"}</div>
+    <div class="cod">${d.categoria_cod||""}${d.operativa? " · "+d.operativa:""}</div>
+    ${badge}`;
+  h += `<div class="sec"><div class="k">Condicionantes</div>`;
+  if(efet.length){
+    h += efet.map(c=>`<div class="cond ${isWarn(c)?"warn":""}"><div class="l">${c.camada}</div>
+      ${c.designacao?`<div class="d">${c.designacao}</div>`:""}</div>`).join("");
+  } else { h += `<div class="muted">Sem servidões ou restrições no ponto.</div>`; }
+  if(mun.length) h += `<div class="mun">Âmbito municipal: ${mun.map(c=>c.camada).join("; ")}</div>`;
+  h += `</div>`;
+  h += `<a class="ficha-btn" target="_blank" href="/api/ficha?lat=${lat}&lon=${lon}">Abrir ficha deste ponto ↗</a>`;
+  document.getElementById("res").innerHTML = h;
+}
+</script>
+</body>
+</html>
