@@ -56,6 +56,7 @@ def _resumo_ponto(res):
         "operativa": res.get("operativa"),
         "estado": res.get("estado"),
         "regime": res.get("regime"),
+        "envelope_efeito": res.get("envelope_efeito"),
         "condicionantes_efetivas": res.get("condicionantes_efetivas"),
         "condicionantes_ambito_municipal": res.get("condicionantes_ambito_municipal"),
         "avisos": res.get("avisos"),

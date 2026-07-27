@@ -199,7 +199,11 @@ function render(d, fichaHref){
     if(c.implantacao_m2!=null) spec.push(`implantação ${fmt(c.implantacao_m2)} m²`);
     h += `<div class="sec"><div class="k">Capacidade estimada</div>
       <div class="abc">${abc}<span class="u"> ABC</span></div>
-      <div class="spec mono">${spec.join(" · ")}</div></div>`;
+      <div class="spec mono">${spec.join(" · ")}</div>`;
+    if(c.apreciacao_patrimonial) h += `<div class="cond warn" style="margin-top:10px">
+      <div class="l">Apreciação patrimonial obrigatória</div>
+      <div class="d">Valores são referência máxima — cércea, volumetria e demolição podem ser condicionadas.</div></div>`;
+    h += `</div>`;
   } else if(d.estado && d.estado!=="ok"){
     h += `<div class="sec"><div class="muted">${d.estado}</div></div>`;
   }

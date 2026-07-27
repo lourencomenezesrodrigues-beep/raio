@@ -110,6 +110,26 @@ def test_analisar_regime_verde():
     assert "interdita" in r["estado"]
     assert r["regras_implementadas"] is True
 
+def _consulta_fuc1(conds):
+    return {"categoria_slug": "frente_urbana_continua_tipo_I",
+            "categoria": {"sc_espaco": "Área de frente urbana contínua de tipo I",
+                          "sc_espaco_cod": "TE2AFUCT1"},
+            "operativa": {}, "condicionantes": conds}
+
+def test_condicionante_patrimonial_flag():
+    r = analisar_ponto(0, 0,
+        dict(area_m2=300, frente_m=10, profundidade_m=30, moda_cercea_m=15, largura_arruamento_m=12),
+        consulta=_consulta_fuc1([{"camada": "Património edificado", "designacao": "X", "legislacao": None}]))
+    assert r["capacidade"]["apreciacao_patrimonial"] is True
+    assert r["envelope_efeito"] == "apreciacao_patrimonial"
+
+def test_condicionante_non_aedificandi_interdita():
+    r = analisar_ponto(0, 0,
+        dict(area_m2=300, frente_m=10, profundidade_m=30, moda_cercea_m=15, largura_arruamento_m=12),
+        consulta=_consulta_fuc1([{"camada": "Zonas non aedificandi", "designacao": None, "legislacao": None}]))
+    assert r["capacidade"] is None
+    assert r["envelope_efeito"] == "non_aedificandi"
+
 def test_metricas_parcela_alinhada():
     import parcela
     from shapely.geometry import LineString, Polygon
@@ -140,5 +160,6 @@ if __name__ == "__main__":
     test_fuc2_regras_carregam(); test_fuc2_arruamento_estreito()
     test_fuc2_arruamento_largo_teto_21(); test_fuc2_moda_supera_teto()
     test_indice_categorias(); test_baixa_densidade(); test_analisar_regime_verde()
+    test_condicionante_patrimonial_flag(); test_condicionante_non_aedificandi_interdita()
     test_metricas_parcela_alinhada(); test_metricas_parcela_rodada()
     print("todos os testes passam")

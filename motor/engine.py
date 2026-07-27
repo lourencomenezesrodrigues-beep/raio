@@ -397,6 +397,7 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
         "condicionantes_ambito_municipal": municipais,
         "avisos": avisos,
         "regime": None,
+        "envelope_efeito": None,
         "frente": None,
         "capacidade": None,
         "estado": None,
@@ -447,7 +448,33 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
     else:
         out["capacidade"] = cap
         out["estado"] = "ok"
+    _aplicar_condicionantes(out, efetivas)
     return out
+
+
+def _aplicar_condicionantes(out, efetivas):
+    """Liga as condicionantes ao envelope: non aedificandi interdita a construção;
+    património/imóveis classificados sujeitam o resultado a apreciação patrimonial.
+    (A servidão aeronáutica fica informativa: a camada não traz cota-limite.)"""
+    cls = [(c.get("camada") or "").lower() for c in (efetivas or [])]
+
+    def tem(*ks):
+        return any(any(k in cl for k in ks) for cl in cls)
+
+    if tem("non aedificandi"):
+        out["capacidade"] = None
+        out["envelope_efeito"] = "non_aedificandi"
+        out["estado"] = ("Zona non aedificandi sobre o ponto — construção interdita pela "
+                         "condicionante, independentemente da categoria de solo.")
+        return
+    if out.get("capacidade") and tem("patrimón", "patrimon", "imóveis classificados",
+                                     "imoveis classificados"):
+        out["capacidade"].setdefault("notas", []).append(
+            "Sujeito a apreciação patrimonial (património edificado / imóvel classificado "
+            "ou zona de proteção): os valores são uma referência máxima — cércea, "
+            "volumetria e demolição podem ser condicionadas.")
+        out["capacidade"]["apreciacao_patrimonial"] = True
+        out["envelope_efeito"] = "apreciacao_patrimonial"
 
 
 def analisar_parcela(poligono, *, auto_moda=True, extra=None, consulta=None):
