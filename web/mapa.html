@@ -5,73 +5,110 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RAIO — pesquisa de terreno</title>
 <link rel="icon" href="/web/brand/raio-4a-favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
 <style>
   :root{
-    --paper:#eef1f3; --surface:#fcfdfe; --ink:#191d21; --muted:#5d6773;
-    --line:#d7dde2; --line-strong:#c2cad1; --accent:#1e5a82; --accent-soft:#e6eef4;
-    --warn:#8a5a12; --warn-stripe:#c8912b; --warn-bg:#f8f1e0;
-    --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --font-mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+    --ink:#16161A; --vermelhao:#F03C2E; --paper:#F7F6F3;
+    --line:rgba(22,22,26,.16); --line-strong:rgba(22,22,26,.30); --muted:rgba(22,22,26,.60);
+    --verm-soft:rgba(240,60,46,.07);
+    --archivo:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
   html,body{height:100%;margin:0}
-  body{display:flex;font-family:var(--font-sans);color:var(--ink);background:var(--paper)}
-  #painel{width:360px;flex:none;height:100%;overflow-y:auto;border-right:1px solid var(--line);
-    background:var(--surface);display:flex;flex-direction:column}
+  body{display:flex;font-family:var(--mono);color:var(--ink);background:var(--paper)}
+  #painel{width:372px;flex:none;height:100%;overflow-y:auto;border-right:1px solid var(--ink);
+    background:var(--paper);display:flex;flex-direction:column}
   #mapa{flex:1;height:100%}
-  .cab{padding:18px 18px 12px;border-bottom:1px solid var(--line)}
-  .logo{font-family:var(--font-mono);font-weight:700;font-size:22px;letter-spacing:.05em;
-    border:2px solid var(--ink);display:inline-block;padding:4px 10px 3px;border-radius:3px;line-height:1}
-  .logo .dot{color:var(--accent)}
-  .sub{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--muted);margin-top:8px}
-  form{display:flex;gap:6px;padding:14px 18px}
-  input{flex:1;font-family:var(--font-sans);font-size:14px;padding:9px 11px;border:1px solid var(--line-strong);
-    border-radius:3px;background:var(--surface);color:var(--ink)}
-  input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
-  button{font-family:var(--font-mono);font-size:12px;letter-spacing:.03em;padding:9px 12px;cursor:pointer;
-    border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:3px}
-  button:active{transform:scale(.97)}
-  .cands{padding:0 18px}
-  .cand{padding:9px 10px;border:1px solid var(--line);border-radius:3px;margin-bottom:6px;cursor:pointer;
-    font-size:13px}
-  .cand:hover{border-color:var(--accent);background:var(--accent-soft)}
-  .cand .t{font-weight:600}
-  .cand .c{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
-  #res{padding:16px 18px;flex:1}
-  .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .cat{font-family:var(--font-mono);font-weight:700;text-transform:uppercase;font-size:16px;margin:4px 0 2px;line-height:1.25}
-  .cod{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
-  .badge{display:inline-block;font-family:var(--font-mono);font-size:11px;padding:2px 8px;border-radius:2px;margin-top:8px}
-  .badge.ok{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
-  .badge.no{background:#f0f0f0;color:var(--muted);border:1px solid var(--line-strong)}
-  .sec{margin-top:18px}
-  .sec>.k{margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-  .cond{border:1px solid var(--line);border-left:3px solid var(--line-strong);border-radius:2px;
-    padding:9px 11px;margin-bottom:7px;font-size:13px}
-  .cond.warn{border-left-color:var(--warn-stripe);background:var(--warn-bg)}
-  .cond .l{font-weight:600}
-  .cond .d{color:var(--muted);font-size:12px;margin-top:2px}
-  .muted{color:var(--muted);font-size:13px}
-  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
-  .abc{font-family:var(--font-mono);font-weight:700;font-size:24px;letter-spacing:-.01em;margin:2px 0}
-  .abc .u{font-size:13px;color:var(--muted);font-weight:400}
-  .spec{font-size:12px;color:var(--muted);margin-top:3px}
-  .mun{font-size:12px;color:var(--muted);margin-top:4px}
-  .ficha-btn{display:block;width:100%;text-align:center;margin-top:16px;background:var(--surface);
-    color:var(--accent);border:1px solid var(--accent);text-decoration:none;padding:10px;border-radius:3px;
-    font-family:var(--font-mono);font-size:12px}
-  .hint{padding:16px 18px;color:var(--muted);font-size:13px;line-height:1.5}
-  .leaflet-container{background:#dfe4e8}
+
+  .cab{padding:20px 20px 14px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:12px}
+  .cab svg{width:34px;height:34px;flex:none}
+  .cab .wm{font-family:var(--archivo);font-weight:900;font-size:24px;letter-spacing:-.03em;
+    line-height:1;text-transform:uppercase}
+  .cab .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-top:3px}
+
+  form{display:flex;gap:0;padding:16px 20px}
+  input{flex:1;font-family:var(--mono);font-size:13px;padding:11px 12px;border:1px solid var(--ink);
+    border-right:none;background:var(--paper);color:var(--ink)}
+  input::placeholder{color:var(--muted)}
+  input:focus{outline:none}
+  button{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    padding:11px 15px;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+    transition:background .16s cubic-bezier(.23,1,.32,1)}
+  button:hover{background:var(--vermelhao);border-color:var(--vermelhao)}
+  button:active{transform:scale(.98)}
+
+  .cands{padding:0 20px}
+  .cand{padding:10px 11px;border:1px solid var(--line);margin-bottom:7px;cursor:pointer;font-size:12.5px}
+  .cand:hover{border-color:var(--ink)}
+  .cand .t{font-family:var(--archivo);font-weight:600;text-transform:uppercase;letter-spacing:.01em}
+  .cand .c{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+
+  #res{padding:18px 20px;flex:1}
+  .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .cat{font-family:var(--archivo);font-weight:800;text-transform:uppercase;font-size:19px;
+    letter-spacing:-.01em;margin:6px 0 2px;line-height:1.1}
+  .cod{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    padding:4px 9px;margin-top:10px;border:1px solid var(--ink)}
+  .badge.no{color:var(--muted);border-color:var(--line-strong)}
+  .sec{margin-top:22px}
+  .sec>.k{margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  .cond{border:1px solid var(--line);border-left:3px solid var(--line-strong);padding:10px 12px;
+    margin-bottom:8px;font-size:12.5px}
+  .cond.warn{border-left-color:var(--vermelhao);background:var(--verm-soft)}
+  .cond .l{font-family:var(--archivo);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.01em}
+  .cond .d{color:var(--muted);font-size:11.5px;margin-top:3px;line-height:1.5}
+  .muted{color:var(--muted);font-size:12.5px;line-height:1.6}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .abc{font-family:var(--mono);font-weight:500;font-size:27px;letter-spacing:-.01em;margin:3px 0;
+    font-variant-numeric:tabular-nums}
+  .abc .u{font-size:12px;color:var(--muted)}
+  .spec{font-size:11.5px;color:var(--muted);margin-top:4px;letter-spacing:.03em}
+  .mun{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.02em}
+  .ficha-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:20px;
+    background:var(--ink);color:var(--paper);border:1px solid var(--ink);text-decoration:none;padding:13px;
+    font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    transition:background .16s cubic-bezier(.23,1,.32,1)}
+  .ficha-btn:hover{background:var(--vermelhao);border-color:var(--vermelhao)}
+  .hint{padding:18px 20px;color:var(--muted);font-size:12.5px;line-height:1.6}
+
+  /* loader "A CALCULAR" — o traço percorre o limite da parcela */
+  .loader{display:flex;align-items:center;gap:14px;padding:4px 0}
+  .loader svg{width:46px;height:46px;flex:none}
+  .loader .lbase{fill:none;stroke:var(--ink);stroke-width:9;opacity:.16;stroke-linejoin:miter}
+  .loader .lseg{fill:none;stroke:var(--vermelhao);stroke-width:9;stroke-linejoin:miter;
+    stroke-dasharray:48 272;animation:march 1.4s linear infinite}
+  .loader-txt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  @keyframes march{to{stroke-dashoffset:-320}}
+  @media (prefers-reduced-motion:reduce){
+    .loader .lseg{animation:pulse 1.4s ease-in-out infinite;stroke-dasharray:320;stroke-dashoffset:0}
+    @keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+  }
+
+  /* Leaflet: sem cantos, tinta da marca */
+  .leaflet-container{background:#e9e8e4;font-family:var(--mono)}
+  .leaflet-bar a,.leaflet-control-layers,.leaflet-draw-toolbar a{border-radius:0!important}
+  .leaflet-control-layers{font-size:11px;border:1px solid var(--ink)!important}
+  .leaflet-bar{border:1px solid var(--ink)!important}
 </style>
 </head>
 <body>
   <div id="painel">
     <div class="cab">
-      <span class="logo">RAIO<span class="dot">.</span></span>
-      <div class="sub">Pesquisa de terreno · Porto</div>
+      <svg viewBox="0 0 100 100" aria-label="RAIO">
+        <path d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z"
+              fill="none" stroke="#F03C2E" stroke-width="9" stroke-linejoin="miter"></path>
+      </svg>
+      <div>
+        <div class="wm">RAIO</div>
+        <div class="sub">Pesquisa de terreno · Porto</div>
+      </div>
     </div>
     <form id="busca">
       <input id="q" placeholder="Morada (ex.: Rua de Santa Catarina 200)" autocomplete="off">
@@ -103,7 +140,7 @@ L.control.layers({},
 const drawn = new L.FeatureGroup().addTo(map);
 map.addControl(new L.Control.Draw({
   position:"topleft",
-  draw:{polygon:{shapeOptions:{color:"#1e5a82",weight:2,fillOpacity:.15}},
+  draw:{polygon:{shapeOptions:{color:"#F03C2E",weight:3,fillColor:"#F03C2E",fillOpacity:.1}},
         polyline:false, rectangle:false, circle:false, marker:false, circlemarker:false},
   edit:{featureGroup:drawn}
 }));
@@ -116,7 +153,9 @@ map.on(L.Draw.Event.CREATED, e=>{
 
 let marca = null;
 function ponto(lat, lon){
-  if(marca) marca.setLatLng([lat,lon]); else marca = L.marker([lat,lon]).addTo(map);
+  if(marca) marca.setLatLng([lat,lon]);
+  else marca = L.circleMarker([lat,lon],{radius:6,color:"#F03C2E",weight:3,
+    fillColor:"#F03C2E",fillOpacity:.9}).addTo(map);
   drawn.clearLayers();
   analisarPonto(lat, lon);
 }
@@ -144,9 +183,13 @@ document.getElementById("busca").addEventListener("submit", async e => {
 
 const res = () => document.getElementById("res");
 const fmt = v => (v==null?"—":(Number.isInteger(v)?v:(+v).toFixed(1)));
+const SYMPATH = "M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z";
+const loaderHTML = txt => `<div class="loader"><svg viewBox="0 0 100 100">
+  <path class="lbase" d="${SYMPATH}"></path><path class="lseg" d="${SYMPATH}"></path></svg>
+  <div class="loader-txt">${txt}</div></div>`;
 
 async function analisarPonto(lat, lon){
-  res().innerHTML = '<div class="muted">A analisar o ponto…</div>';
+  res().innerHTML = loaderHTML('A ler o cadastro');
   try{
     const r = await fetch(`/api/analisar?lat=${lat}&lon=${lon}`);
     const d = await r.json();
@@ -156,7 +199,7 @@ async function analisarPonto(lat, lon){
 }
 
 async function analisarParcela(latlngs){
-  res().innerHTML = '<div class="muted">A calcular a capacidade do terreno…</div>';
+  res().innerHTML = loaderHTML('A calcular a capacidade');
   try{
     const r = await fetch("/api/parcela", {method:"POST",
       headers:{"Content-Type":"application/json"}, body:JSON.stringify({coords:latlngs})});
