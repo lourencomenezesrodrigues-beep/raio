@@ -120,55 +120,68 @@ def capacidade_moradia(parcela):
     if pisos * PE_DIREITO > 11.0:
         notas.append("rpdm-30.1.c: altura de fachada limitada a 11 m (Newsletter 04/2026)")
 
-    # implantação: tecto de impermeabilização 0,6 da parcela [30.1.b]
-    impermeavel_max = 0.6 * parcela["area_m2"]
+    # --- ocupação simulada: piso térreo + pisos superiores recuados --------
+    area = parcela["area_m2"]
+    impermeavel_max = 0.6 * area                          # tecto 0,6 [30.1.b]
     aplicadas.append("rpdm-30.1.b")
-    if "frente_m" in parcela and "profundidade_m" in parcela:
-        implantacao = min(parcela["frente_m"] * parcela["profundidade_m"], impermeavel_max)
+    frente = parcela.get("frente_m")
+    prof = parcela.get("profundidade_m")
+    recuo = max((pisos - 1) * PE_DIREITO / 2.0, 3.0)      # afastamento pisos superiores [30.1.d]
+    aplicadas.append("rpdm-30.1.d")
+
+    if frente and prof:
+        # piso térreo: faixa frontal; logradouro permeável (>= 0,4) fica a tardoz.
+        a_terreo = min(frente * prof * 0.6, impermeavel_max)
+        prof_terreo = a_terreo / frente
+        # pisos superiores recuam `recuo` dos limites laterais e de tardoz (frente alinhada)
+        a_sup = max(frente - 2 * recuo, 0.0) * max(prof_terreo - recuo, 0.0)
+        implantacao = a_terreo
+        abc_min = a_terreo + a_sup * (pisos - 1)
+        notas.append(f"Ocupação simulada: piso térreo {round(a_terreo)} m² à face da rua "
+                     f"(impermeabilização 0,6 [30.1.b], logradouro permeável a tardoz); "
+                     f"{pisos - 1} pisos superiores recuados {recuo:.0f} m dos limites "
+                     f"[30.1.d] = {round(a_sup)} m² cada.")
     else:
         implantacao = impermeavel_max
-    # afastamento dos pisos superiores ao limite: max(altura/2, 3 m) [30.1.d]
-    aplicadas.append("rpdm-30.1.d")
-    notas.append("rpdm-30.1.d: pisos superiores recuam >= max(altura/2, 3 m) dos "
-                 "limites para além do tardoz dos contíguos — encolhe a implantação "
-                 "em altura (não quantificado sem geometria da parcela)")
+        a_sup = 0.0
+        abc_min = impermeavel_max * pisos
+        notas.append("Sem geometria da parcela: ABC estimada por 0,6 × área × pisos, "
+                     "sem simular os afastamentos.")
 
     # alinhamento frontal [30.1.a], excepto parcela > 2000 m² [30.2]
-    if parcela["area_m2"] > 2000:
+    if area > 2000:
         aplicadas.append("rpdm-30.2")
         notas.append("rpdm-30.2: parcela > 2000 m² — implantação livre (alinhamento "
-                     "frontal dispensado, mantendo 0,6 / 3 pisos / afastamentos)")
+                     "frontal dispensado, mantendo 0,6 / 3 pisos / afastamentos).")
     else:
         aplicadas.append("rpdm-30.1.a")
-
-    abc_min = implantacao * pisos
 
     # limite superior: colmatação de conjunto consolidado -> moda da cércea [30.1.c]
     abc_max = abc_min
     if parcela.get("colmatacao_consolidado") and parcela.get("moda_cercea_m"):
         pisos_sup = int(arred_multiplo(parcela["moda_cercea_m"]) // PE_DIREITO)
         if pisos_sup > pisos:
-            abc_max = implantacao * pisos_sup
+            abc_max = implantacao + a_sup * (pisos_sup - 1)
             sup.append("rpdm-30.1.c (colmatação)")
-    # UOPG: tecto de pisos pode ser superior [30.3]
     if parcela.get("uopg"):
         sup.append("rpdm-30.3")
         notas.append("rpdm-30.3: parcela em UOPG — nº de pisos pode ser superior no "
-                     "âmbito da sua concretização: carece de análise")
-    if parcela["area_m2"] < 100:
+                     "âmbito da sua concretização: carece de análise.")
+    if area < 100:
         notas.append("rpdm-30.1.b: parcela de dimensões muito reduzidas — excepção ao "
-                     "índice 0,6 argumentável (sem limiar quantificado)")
+                     "índice 0,6 argumentável (sem limiar quantificado).")
 
     return {
         "cercea_m": cercea, "pisos": pisos,
         "implantacao_m2": round(implantacao, 1),
+        "area_piso_superior_m2": round(a_sup, 1),
         "impermeavel_max_m2": round(impermeavel_max, 1),
         "abc_min_m2": round(abc_min), "abc_max_m2": round(abc_max),
         "regras_base": aplicadas, "regras_limite_superior": sup,
         "notas": notas,
-        "incerteza": ("Limite inferior: aplicação estrita do RPDM. Limite "
-                      "superior: excepções cuja aceitação depende de "
-                      "apreciação municipal."),
+        "incerteza": ("Limite inferior: aplicação estrita do RPDM (ocupação simulada "
+                      "que cumpre impermeabilização, afastamentos e logradouro). Limite "
+                      "superior: excepções cuja aceitação depende de apreciação municipal."),
     }
 
 
@@ -437,11 +450,15 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
                          "para calcular o intervalo")
         return out
 
-    if auto_moda:
+    # a moda da cércea só é precisa nas FUC (e na moradia em colmatação);
+    # nas restantes categorias evita-se a chamada ao Overture.
+    precisa_moda = slug in ("frente_urbana_continua_tipo_I", "frente_urbana_continua_tipo_II") \
+        or (slug == "edificios_tipo_moradia" and parcela.get("colmatacao_consolidado"))
+    if auto_moda and precisa_moda and not parcela.get("moda_cercea_m"):
         import frente as _frente
         finfo = _frente.frente_no_ponto(x, y)
         out["frente"] = finfo
-        if finfo.get("moda_cercea_m") and not parcela.get("moda_cercea_m"):
+        if finfo.get("moda_cercea_m"):
             parcela = {**parcela, "moda_cercea_m": finfo["moda_cercea_m"]}
 
     # FUC-I depende sempre da moda da cércea; se indeterminável, não a inventamos

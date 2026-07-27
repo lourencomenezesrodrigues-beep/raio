@@ -45,6 +45,21 @@ def _poligono(pts):
     return Polygon([_to3763.transform(lon, lat) for lat, lon in pts])
 
 
+def _extra_qs(qs):
+    """Parâmetros não-automáticos vindos da query string -> dict `extra`."""
+    e = {}
+    for k in ("uso_habitacao_coletiva", "gaveto", "colmatacao_consolidado", "uopg"):
+        if qs.get(k, ["0"])[0] in ("1", "true", "on"):
+            e[k] = True
+    for k in ("empena_confinante_m", "largura_arruamento_m", "moda_cercea_m"):
+        if k in qs:
+            try:
+                e[k] = float(qs[k][0])
+            except ValueError:
+                pass
+    return e or None
+
+
 def _resumo_ponto(res):
     """Reduz o resultado do motor ao essencial para o frontend."""
     return {
@@ -104,7 +119,8 @@ class Handler(BaseHTTPRequestHandler):
                 if "poly" in qs:  # polígono desenhado: "lat,lon;lat,lon;..."
                     pts = [[float(a) for a in par.split(",")]
                            for par in qs["poly"][0].split(";") if par]
-                    res = engine.analisar_parcela(_poligono(pts), auto_moda=True)
+                    res = engine.analisar_parcela(_poligono(pts), auto_moda=True,
+                                                  extra=_extra_qs(qs))
                 else:
                     x, y = _xy(qs)
                     parcela = None
@@ -129,7 +145,8 @@ class Handler(BaseHTTPRequestHandler):
                 pts = body.get("coords") or []
                 if len(pts) < 3:
                     return self._send(400, {"erro": "polígono precisa de >= 3 pontos"})
-                res = engine.analisar_parcela(_poligono(pts), auto_moda=True)
+                extra = body.get("extra") or None
+                res = engine.analisar_parcela(_poligono(pts), auto_moda=True, extra=extra)
                 return self._send(200, _resumo_ponto(res))
             self._send(404, {"erro": "rota desconhecida"})
         except Exception as e:  # noqa: BLE001
@@ -148,6 +165,12 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    # aquece imports pesados (duckdb, rasterio, shapely) para o 1º pedido não
+    # pagar o cold-start de ~20 s.
+    try:
+        import parcela, frente, lidar  # noqa: F401
+    except Exception:
+        pass
     srv = ThreadingHTTPServer(("127.0.0.1", PORTA), Handler)
     print(f"RAIO a correr em http://127.0.0.1:{PORTA}  (Ctrl+C para parar)")
     try:

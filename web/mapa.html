@@ -77,6 +77,16 @@
     transition:background .16s cubic-bezier(.23,1,.32,1)}
   .ficha-btn:hover{background:var(--vermelhao);border-color:var(--vermelhao)}
   .hint{padding:18px 20px;color:var(--muted);font-size:12.5px;line-height:1.6}
+  .fx-form{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .fx{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fx input[type=number]{font-family:var(--mono);font-size:13px;padding:8px 10px;
+    border:1px solid var(--line-strong);background:var(--paper);color:var(--ink)}
+  .fx input:focus{outline:none;border-color:var(--ink)}
+  .fx.cbx{flex-direction:row;align-items:center;gap:9px;cursor:pointer}
+  .fx.cbx input{accent-color:var(--vermelhao);width:15px;height:15px}
+  .fx-hint{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin-top:8px}
 
   /* loader "A CALCULAR" — o traço percorre o limite da parcela */
   .loader{display:flex;align-items:center;gap:14px;padding:4px 0}
@@ -148,8 +158,9 @@ map.on(L.Draw.Event.CREATED, e=>{
   drawn.clearLayers(); drawn.addLayer(e.layer);
   if(marca){ map.removeLayer(marca); marca=null; }
   const ll = e.layer.getLatLngs()[0].map(p=>[p.lat,p.lng]);
-  analisarParcela(ll);
+  analisarParcela(ll, {});
 });
+let ultimoLatlngs = null, ultimoExtra = {};
 
 let marca = null;
 function ponto(lat, lon){
@@ -198,19 +209,57 @@ async function analisarPonto(lat, lon){
   }catch(err){ res().innerHTML=`<div class="muted">Erro: ${err}</div>`; }
 }
 
-async function analisarParcela(latlngs){
+async function analisarParcela(latlngs, extra){
+  ultimoLatlngs = latlngs; ultimoExtra = extra || {};
   res().innerHTML = loaderHTML('A calcular a capacidade');
   try{
     const r = await fetch("/api/parcela", {method:"POST",
-      headers:{"Content-Type":"application/json"}, body:JSON.stringify({coords:latlngs})});
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({coords:latlngs, extra:ultimoExtra})});
     const d = await r.json();
     if(d.erro){ res().innerHTML=`<div class="muted">Erro: ${d.erro}</div>`; return; }
     const poly = latlngs.map(p=>`${p[0]},${p[1]}`).join(";");
-    render(d, `/api/ficha?poly=${encodeURIComponent(poly)}`);
+    const q = new URLSearchParams({poly});
+    for(const [k,v] of Object.entries(ultimoExtra)) q.set(k, v===true?"1":v);
+    render(d, `/api/ficha?${q.toString()}`, true);
   }catch(err){ res().innerHTML=`<div class="muted">Erro: ${err}</div>`; }
 }
 
-function render(d, fichaHref){
+const num = (n,l,ph)=>`<label class="fx"><span>${l}</span>
+  <input type="number" step="0.5" min="0" data-k="${n}" placeholder="${ph||''}"
+   value="${ultimoExtra[n]!=null?ultimoExtra[n]:''}"></label>`;
+const chk = (n,l)=>`<label class="fx cbx"><input type="checkbox" data-k="${n}"
+   ${ultimoExtra[n]?'checked':''}><span>${l}</span></label>`;
+
+function formHTML(slug){
+  let campos = "";
+  if(slug && slug.indexOf("frente_urbana")===0){
+    campos = num("largura_arruamento_m","Largura do arruamento","m")
+           + num("moda_cercea_m","Moda da cércea (sobrepor)","m")
+           + num("empena_confinante_m","Empena confinante","m")
+           + chk("uso_habitacao_coletiva","Habitação coletiva")
+           + chk("gaveto","Parcela de gaveto");
+  } else if(slug==="edificios_tipo_moradia"){
+    campos = num("moda_cercea_m","Moda da cércea (colmatação)","m")
+           + chk("colmatacao_consolidado","Colmatação de conjunto consolidado")
+           + chk("uopg","Em UOPG");
+  } else { return ""; }
+  return `<div class="sec"><div class="k">Parâmetros (não automáticos)</div>
+    <form id="fx-form" class="fx-form">${campos}</form>
+    <div class="fx-hint">Preenche o que souberes — recalcula automaticamente.</div></div>`;
+}
+
+function aplicarExtra(){
+  const extra = {};
+  document.querySelectorAll('#fx-form [data-k]').forEach(el=>{
+    const k = el.dataset.k;
+    if(el.type==='checkbox'){ if(el.checked) extra[k]=true; }
+    else if(el.value!=='') extra[k]=parseFloat(el.value);
+  });
+  if(ultimoLatlngs) analisarParcela(ultimoLatlngs, extra);
+}
+
+function render(d, fichaHref, comForm){
   const efet = d.condicionantes_efetivas||[], mun = d.condicionantes_ambito_municipal||[];
   const warnKeys = ["patrim","imóveis classificados","hídric","domínio público","servidão","non aedificandi"];
   const isWarn = c => warnKeys.some(k => (c.camada||"").toLowerCase().includes(k));
@@ -260,7 +309,10 @@ function render(d, fichaHref){
   if(mun.length) h += `<div class="mun">Âmbito municipal: ${mun.map(c=>c.camada).join("; ")}</div>`;
   h += `</div>`;
   h += `<a class="ficha-btn" target="_blank" href="${fichaHref}">Abrir ficha ↗</a>`;
+  if(comForm) h += formHTML(d.categoria_slug);
   res().innerHTML = h;
+  const f = document.getElementById("fx-form");
+  if(f) f.addEventListener("change", aplicarExtra);
 }
 </script>
 </body>

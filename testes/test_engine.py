@@ -25,8 +25,9 @@ def test_moradia_sintetico():
     assert r["pisos"] == 3                    # 30.1.c
     assert r["cercea_m"] == 9.0               # 3 × 3 m, abaixo do tecto de 11 m
     assert r["impermeavel_max_m2"] == 240.0   # 0,6 × 400 [30.1.b]
-    assert r["implantacao_m2"] == 180         # 12 × 15 < 240
-    assert r["abc_min_m2"] == 540
+    assert r["implantacao_m2"] == 108         # piso térreo: 0,6 × 12 × 15 (logradouro a tardoz)
+    assert r["area_piso_superior_m2"] == 36    # (12-6) × (9-3), recuo 3 m [30.1.d]
+    assert r["abc_min_m2"] == 180             # 108 + 36 × 2 (2 pisos superiores)
     assert "rpdm-30.1.b" in r["regras_base"] and "rpdm-30.1.c" in r["regras_base"]
 
 def test_moradia_parcela_grande():
