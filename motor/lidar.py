@@ -36,15 +36,22 @@ def _acha(padrao: str) -> str | None:
 
 
 def _abrir():
-    """Devolve (mds_ds, mdt_ds) abertos, ou (None, None)."""
+    """Devolve (mds_ds, mdt_ds) abertos, ou (None, None).
+
+    O LiDAR é opcional: se o rasterio não importar (falta de biblioteca de
+    sistema no contentor) ou os GeoTIFF MDS/MDT não existirem, degrada
+    graciosamente para (None, None) e o cálculo usa a cércea do Overture.
+    """
     if "ok" not in _cache:
-        import rasterio
-        mds_p, mdt_p = _acha("mds"), _acha("mdt")
-        if mds_p and mdt_p:
-            _cache["mds"] = rasterio.open(mds_p)
-            _cache["mdt"] = rasterio.open(mdt_p)
-            _cache["ok"] = True
-        else:
+        _cache["ok"] = False
+        try:
+            import rasterio
+            mds_p, mdt_p = _acha("mds"), _acha("mdt")
+            if mds_p and mdt_p:
+                _cache["mds"] = rasterio.open(mds_p)
+                _cache["mdt"] = rasterio.open(mdt_p)
+                _cache["ok"] = True
+        except Exception:
             _cache["ok"] = False
     if not _cache["ok"]:
         return None, None
