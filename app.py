@@ -23,6 +23,7 @@ import engine  # noqa: E402
 import geocode  # noqa: E402
 import ficha as ficha_mod  # noqa: E402
 from pyproj import Transformer  # noqa: E402
+from shapely.geometry import Polygon  # noqa: E402
 
 RAIZ = os.path.dirname(__file__)
 WEB = os.path.join(RAIZ, "web")
@@ -39,6 +40,11 @@ def _xy(qs):
     raise ValueError("faltam coordenadas (x,y ou lat,lon)")
 
 
+def _poligono(pts):
+    """[[lat,lon],...] (WGS84) -> shapely Polygon em EPSG:3763."""
+    return Polygon([_to3763.transform(lon, lat) for lat, lon in pts])
+
+
 def _resumo_ponto(res):
     """Reduz o resultado do motor ao essencial para o frontend."""
     return {
@@ -51,6 +57,9 @@ def _resumo_ponto(res):
         "condicionantes_efetivas": res.get("condicionantes_efetivas"),
         "condicionantes_ambito_municipal": res.get("condicionantes_ambito_municipal"),
         "avisos": res.get("avisos"),
+        "capacidade": res.get("capacidade"),
+        "parcela_metricas": res.get("parcela_metricas"),
+        "frente": res.get("frente"),
     }
 
 
@@ -87,16 +96,36 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, _resumo_ponto(engine.analisar_ponto(x, y)))
 
             if u.path == "/api/ficha":
-                x, y = _xy(qs)
-                parcela = None
-                if all(k in qs for k in ("area", "frente", "prof")):
-                    parcela = dict(area_m2=float(qs["area"][0]),
-                                   frente_m=float(qs["frente"][0]),
-                                   profundidade_m=float(qs["prof"][0]))
-                res = engine.analisar_ponto(x, y, parcela, auto_moda=parcela is not None)
+                if "poly" in qs:  # polígono desenhado: "lat,lon;lat,lon;..."
+                    pts = [[float(a) for a in par.split(",")]
+                           for par in qs["poly"][0].split(";") if par]
+                    res = engine.analisar_parcela(_poligono(pts), auto_moda=True)
+                else:
+                    x, y = _xy(qs)
+                    parcela = None
+                    if all(k in qs for k in ("area", "frente", "prof")):
+                        parcela = dict(area_m2=float(qs["area"][0]),
+                                       frente_m=float(qs["frente"][0]),
+                                       profundidade_m=float(qs["prof"][0]))
+                    res = engine.analisar_ponto(x, y, parcela, auto_moda=parcela is not None)
                 return self._send(200, ficha_mod.ficha_html(res, com_mapas=True),
                                   ctype="text/html; charset=utf-8")
 
+            self._send(404, {"erro": "rota desconhecida"})
+        except Exception as e:  # noqa: BLE001
+            self._send(500, {"erro": str(e)})
+
+    def do_POST(self):
+        u = urlparse(self.path)
+        try:
+            if u.path == "/api/parcela":
+                n = int(self.headers.get("Content-Length", 0))
+                body = json.loads(self.rfile.read(n) or b"{}")
+                pts = body.get("coords") or []
+                if len(pts) < 3:
+                    return self._send(400, {"erro": "polígono precisa de >= 3 pontos"})
+                res = engine.analisar_parcela(_poligono(pts), auto_moda=True)
+                return self._send(200, _resumo_ponto(res))
             self._send(404, {"erro": "rota desconhecida"})
         except Exception as e:  # noqa: BLE001
             self._send(500, {"erro": str(e)})

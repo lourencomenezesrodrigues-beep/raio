@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RAIO — pesquisa de terreno</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
 <style>
   :root{
     --paper:#eef1f3; --surface:#fcfdfe; --ink:#191d21; --muted:#5d6773;
@@ -53,6 +54,10 @@
   .cond .l{font-weight:600}
   .cond .d{color:var(--muted);font-size:12px;margin-top:2px}
   .muted{color:var(--muted);font-size:13px}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  .abc{font-family:var(--font-mono);font-weight:700;font-size:24px;letter-spacing:-.01em;margin:2px 0}
+  .abc .u{font-size:13px;color:var(--muted);font-weight:400}
+  .spec{font-size:12px;color:var(--muted);margin-top:3px}
   .mun{font-size:12px;color:var(--muted);margin-top:4px}
   .ficha-btn{display:block;width:100%;text-align:center;margin-top:16px;background:var(--surface);
     color:var(--accent);border:1px solid var(--accent);text-decoration:none;padding:10px;border-radius:3px;
@@ -79,6 +84,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 <script>
 const PDM = "https://fedservergeo.cm-porto.pt/arcgis/rest/services/PDM2021";
 
@@ -92,10 +98,26 @@ L.control.layers({},
   {"Qualificação do solo":qualif, "Condicionantes":cond},
   {collapsed:false}).addTo(map);
 
+// desenho do terreno -> capacidade
+const drawn = new L.FeatureGroup().addTo(map);
+map.addControl(new L.Control.Draw({
+  position:"topleft",
+  draw:{polygon:{shapeOptions:{color:"#1e5a82",weight:2,fillOpacity:.15}},
+        polyline:false, rectangle:false, circle:false, marker:false, circlemarker:false},
+  edit:{featureGroup:drawn}
+}));
+map.on(L.Draw.Event.CREATED, e=>{
+  drawn.clearLayers(); drawn.addLayer(e.layer);
+  if(marca){ map.removeLayer(marca); marca=null; }
+  const ll = e.layer.getLatLngs()[0].map(p=>[p.lat,p.lng]);
+  analisarParcela(ll);
+});
+
 let marca = null;
 function ponto(lat, lon){
   if(marca) marca.setLatLng([lat,lon]); else marca = L.marker([lat,lon]).addTo(map);
-  analisar(lat, lon);
+  drawn.clearLayers();
+  analisarPonto(lat, lon);
 }
 map.on("click", e => { ponto(e.latlng.lat, e.latlng.lng); });
 
@@ -119,18 +141,32 @@ document.getElementById("busca").addEventListener("submit", async e => {
   }catch(err){ cds.innerHTML=`<div class="muted">Erro: ${err}</div>`; }
 });
 
-async function analisar(lat, lon){
-  const res = document.getElementById("res");
-  res.innerHTML = '<div class="muted">A analisar o ponto…</div>';
+const res = () => document.getElementById("res");
+const fmt = v => (v==null?"—":(Number.isInteger(v)?v:(+v).toFixed(1)));
+
+async function analisarPonto(lat, lon){
+  res().innerHTML = '<div class="muted">A analisar o ponto…</div>';
   try{
     const r = await fetch(`/api/analisar?lat=${lat}&lon=${lon}`);
     const d = await r.json();
-    if(d.erro){ res.innerHTML=`<div class="muted">Erro: ${d.erro}</div>`; return; }
-    render(d, lat, lon);
-  }catch(err){ res.innerHTML=`<div class="muted">Erro: ${err}</div>`; }
+    if(d.erro){ res().innerHTML=`<div class="muted">Erro: ${d.erro}</div>`; return; }
+    render(d, `/api/ficha?lat=${lat}&lon=${lon}`);
+  }catch(err){ res().innerHTML=`<div class="muted">Erro: ${err}</div>`; }
 }
 
-function render(d, lat, lon){
+async function analisarParcela(latlngs){
+  res().innerHTML = '<div class="muted">A calcular a capacidade do terreno…</div>';
+  try{
+    const r = await fetch("/api/parcela", {method:"POST",
+      headers:{"Content-Type":"application/json"}, body:JSON.stringify({coords:latlngs})});
+    const d = await r.json();
+    if(d.erro){ res().innerHTML=`<div class="muted">Erro: ${d.erro}</div>`; return; }
+    const poly = latlngs.map(p=>`${p[0]},${p[1]}`).join(";");
+    render(d, `/api/ficha?poly=${encodeURIComponent(poly)}`);
+  }catch(err){ res().innerHTML=`<div class="muted">Erro: ${err}</div>`; }
+}
+
+function render(d, fichaHref){
   const efet = d.condicionantes_efetivas||[], mun = d.condicionantes_ambito_municipal||[];
   const warnKeys = ["patrim","imóveis classificados","hídric","domínio público","servidão","non aedificandi"];
   const isWarn = c => warnKeys.some(k => (c.camada||"").toLowerCase().includes(k));
@@ -140,8 +176,23 @@ function render(d, lat, lon){
     : `<span class="badge no">categoria sem regras — carece de análise</span>`;
   let h = `<div class="k">Categoria de solo</div>
     <div class="cat">${d.categoria||"—"}</div>
-    <div class="cod">${d.categoria_cod||""}${d.operativa? " · "+d.operativa:""}</div>
-    ${badge}`;
+    <div class="cod">${d.categoria_cod||""}${d.operativa? " · "+d.operativa:""}</div>${badge}`;
+
+  if(d.parcela_metricas){
+    const m = d.parcela_metricas;
+    h += `<div class="sec"><div class="k">Parcela</div><div class="mono" style="font-size:13px">
+      ${fmt(m.area_m2)} m² · frente ${fmt(m.frente_m)} m · prof. ${fmt(m.profundidade_m)} m</div></div>`;
+  }
+  if(d.capacidade){
+    const c = d.capacidade;
+    const abc = c.abc_min_m2===c.abc_max_m2 ? `${c.abc_min_m2} m²` : `${c.abc_min_m2}–${c.abc_max_m2} m²`;
+    h += `<div class="sec"><div class="k">Capacidade estimada</div>
+      <div class="abc">${abc}<span class="u"> ABC</span></div>
+      <div class="spec mono">cércea ${fmt(c.cercea_m)} m · ${c.pisos} pisos · implantação ${fmt(c.implantacao_m2)} m²</div></div>`;
+  } else if(d.estado && d.estado!=="ok"){
+    h += `<div class="sec"><div class="muted">${d.estado}</div></div>`;
+  }
+
   h += `<div class="sec"><div class="k">Condicionantes</div>`;
   if(efet.length){
     h += efet.map(c=>`<div class="cond ${isWarn(c)?"warn":""}"><div class="l">${c.camada}</div>
@@ -149,8 +200,8 @@ function render(d, lat, lon){
   } else { h += `<div class="muted">Sem servidões ou restrições no ponto.</div>`; }
   if(mun.length) h += `<div class="mun">Âmbito municipal: ${mun.map(c=>c.camada).join("; ")}</div>`;
   h += `</div>`;
-  h += `<a class="ficha-btn" target="_blank" href="/api/ficha?lat=${lat}&lon=${lon}">Abrir ficha deste ponto ↗</a>`;
-  document.getElementById("res").innerHTML = h;
+  h += `<a class="ficha-btn" target="_blank" href="${fichaHref}">Abrir ficha ↗</a>`;
+  res().innerHTML = h;
 }
 </script>
 </body>
