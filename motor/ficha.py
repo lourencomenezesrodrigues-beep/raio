@@ -188,7 +188,11 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
     assunto = rua or cat
     out.append('<section class="capa">')
     out.append('<div class="capa-top">'
-               '<div class="logo">RAIO<span class="dot">.</span></div>'
+               '<div class="capa-logo">'
+               '<svg viewBox="0 0 100 100" aria-label="RAIO">'
+               '<path d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z" '
+               'fill="none" stroke="#F03C2E" stroke-width="9" stroke-linejoin="miter"></path></svg>'
+               '<span class="wm">RAIO</span></div>'
                '<div class="capa-tag">Análise não vinculativa<br>Concelho do Porto</div>'
                '</div>')
     out.append('<div class="capa-mid">')
@@ -356,6 +360,10 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
     elif res.get("regime"):
         out.append(f'{_e(res["regime"]["sintese"])} '
                    f'<b>Edificabilidade: {_e(res["regime"]["edificavel"])}.</b> '
+                   f'As condicionantes acima mantêm-se relevantes.')
+    elif res.get("regras_implementadas"):
+        out.append(f'A categoria ({_e(cat)}) é coberta pelas regras RAIO, mas o cálculo '
+                   f'não pôde concluir-se: <b>{_e(res.get("estado") or "faltam dados")}</b>. '
                    f'As condicionantes acima mantêm-se relevantes.')
     else:
         out.append(f'A categoria do ponto ({_e(cat)}) não é coberta pelas regras '
