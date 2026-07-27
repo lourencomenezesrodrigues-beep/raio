@@ -100,19 +100,25 @@ def frente_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0, buffer_m=12.0):
     corredor = lanco.buffer(dist, single_sided=True)
     sel = edif[edif.geometry.intersects(corredor)]
 
+    import lidar
+    lidar_ok = lidar.disponivel()
     frentes = []
-    n_h = n_f = 0
+    n_l = n_h = n_f = 0
     for _, r in sel.iterrows():
-        h, nf = r["height"], r["num_floors"]
-        if pd.notna(h) and float(h) > 0:
-            cercea = float(h); n_h += 1
-        elif pd.notna(nf) and float(nf) > 0:
-            cercea = float(nf) * PE_DIREITO; n_f += 1
-        else:
-            continue
         g = r.geometry
         if g.geom_type == "MultiPolygon":
             g = max(g.geoms, key=lambda p: p.area)
+        cercea = lidar.altura_no_poligono(g) if lidar_ok else None
+        if cercea is not None:
+            n_l += 1
+        else:  # fallback Overture
+            h, nf = r["height"], r["num_floors"]
+            if pd.notna(h) and float(h) > 0:
+                cercea = float(h); n_h += 1
+            elif pd.notna(nf) and float(nf) > 0:
+                cercea = float(nf) * PE_DIREITO; n_f += 1
+            else:
+                continue
         xs = [lanco.project(Point(c)) for c in g.exterior.coords]
         fach = (max(xs) - min(xs)) if xs else 0.0
         if fach > 0:
@@ -123,7 +129,7 @@ def frente_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0, buffer_m=12.0):
         "rua": nome,
         "comprimento_frente_m": round(lanco.length, 1),
         "n_edificios": res.n_edificios,
-        "fonte_cercea": {"height": n_h, "num_floors": n_f},
+        "fonte_cercea": {"lidar": n_l, "height": n_h, "num_floors": n_f},
         "moda_cercea_m": res.moda_m,
         "distribuicao": res.distribuicao,
         "fracao_moda": round(res.fracao, 2),

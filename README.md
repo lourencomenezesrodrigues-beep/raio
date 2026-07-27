@@ -29,7 +29,9 @@ de terrenos no concelho do Porto. Um projecto Dinosaur Ideas.
 - opendata.porto.digital — geopackages do PDM 2021 (ODbL 1.0)
 - fedservergeo.cm-porto.pt/arcgis — consulta por ponto (PDM2021) e cartografia
   base do «Mapas do Porto» (Cartografia/Mapa_Base_Cache)
-- Overture Maps — edificado (altura/nº de pisos) para a moda da cércea
+- Overture Maps — edificado (implantação; altura/nº de pisos de fallback)
+- DGT — Levantamento LiDAR de Portugal Continental (MDT+MDS, cdd.dgterritorio.gov.pt):
+  altura real do edificado = MDS − MDT; ficheiros em `dados/lidar/` (ver LEIA-ME)
 - EPSG:3763 (ETRS89/PT-TM06)
 
 ## Ambiente

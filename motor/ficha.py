@@ -93,7 +93,8 @@ def ficha_markdown(res: dict) -> str:
         fr = res.get("frente") or {}
         if fr.get("moda_cercea_m") is not None:
             fonte = fr.get("fonte_cercea") or {}
-            origem = ("medida (Overture)" if fonte.get("height")
+            origem = ("LiDAR (DGT)" if fonte.get("lidar")
+                      else "medida (Overture)" if fonte.get("height")
                       else "estimada de nº de pisos (Overture)")
             L.append(f"Moda da cércea da frente: **{_fmt(fr['moda_cercea_m'],' m')}** "
                      f"— {origem}, {fr.get('n_edificios','?')} edifícios "
@@ -300,7 +301,9 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
         out.append('</div>')
         if fr.get("moda_cercea_m") is not None:
             fonte = fr.get("fonte_cercea") or {}
-            origem = "medida" if fonte.get("height") else "estimada de nº de pisos"
+            origem = ("LiDAR (DGT)" if fonte.get("lidar")
+                      else "medida" if fonte.get("height")
+                      else "estimada de nº de pisos")
             out.append(f'<p class="moda-note">Moda da cércea da frente: '
                        f'<b>{_num(fr["moda_cercea_m"],"m")}</b> — {origem} (Overture), '
                        f'{_e(fr.get("n_edificios","?"))} edifícios em '

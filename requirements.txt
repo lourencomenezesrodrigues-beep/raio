@@ -7,3 +7,4 @@ pyproj>=3.7
 requests>=2.31
 duckdb>=1.5
 PyYAML>=6.0
+rasterio>=1.3
