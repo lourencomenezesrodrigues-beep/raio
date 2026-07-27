@@ -277,6 +277,22 @@ def analisar_parcela(poligono, *, auto_moda=True, extra=None, consulta=None):
     return out
 
 
+def analisar_morada(morada, *, parcela=None, auto_moda=False):
+    """Pesquisa por texto: geocodifica a morada (motor.geocode) e analisa o ponto.
+
+    Devolve o resultado de analisar_ponto acrescido de `morada`
+    (consulta, morada encontrada e coordenadas), ou {erro} se não encontrar.
+    """
+    import geocode
+    g = geocode.geocodificar(morada)
+    if g is None:
+        return {"erro": f"morada não encontrada no Porto: {morada!r}", "morada_consulta": morada}
+    out = analisar_ponto(g["x"], g["y"], parcela, auto_moda=auto_moda)
+    out["morada"] = {"consulta": morada, "encontrada": g["label"],
+                     "x": g["x"], "y": g["y"]}
+    return out
+
+
 if __name__ == "__main__":
     from pprint import pprint
     print("### FUC-I (inputs sintéticos)")
