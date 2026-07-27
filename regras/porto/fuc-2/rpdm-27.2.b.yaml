@@ -1,0 +1,21 @@
+id: rpdm-27.2.b
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 2, alínea b)"
+categoria: frente_urbana_continua_tipo_II
+tema: cercea_teto_21m
+texto: >
+  Quando o perfil transversal do espaço público ou via pública confinantes
+  com uma frente urbana seja superior a 21 metros, a cércea máxima admitida é
+  de 21 metros, exceto quando a moda da cércea for superior, respeitando-se
+  essa moda, ou quando já existir uma cércea estabelecida, ou a estabelecer
+  em instrumento adequado, para essa frente urbana.
+parametros:
+  perfil_via_limiar_m: 21
+  cercea_max_m: 21
+  excecao: moda_da_cercea_superior_ou_cercea_estabelecida
+computabilidade: automatica_com_edificado
+entradas: [largura_arruamento, moda_da_cercea]
+efeito: >
+  Tecto de cércea: se o arruamento > 21 m, cércea máx = 21 m, salvo se a moda
+  da cércea for superior (respeita-se a moda). Combina com a alínea g).
+papel_no_intervalo: base

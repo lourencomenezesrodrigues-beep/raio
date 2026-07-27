@@ -1,0 +1,25 @@
+id: rpdm-26
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 26.º"
+categoria: frente_urbana_continua_tipo_II
+tema: ambito_e_objetivos
+texto: >
+  As áreas de frente urbana contínua do tipo II correspondem às áreas
+  estruturadas em quarteirão com edifícios localizados, predominantemente,
+  à face dos arruamentos, em que o espaço público se encontra definido e em
+  que as frentes urbanas edificadas estão em processo de transformação
+  construtiva e de uso, pretendendo-se a manutenção e reestruturação das
+  malhas e a consolidação do tipo de relação do edificado com o espaço
+  público existente, designadamente, a uniformidade da frente urbana.
+computabilidade: semi
+entradas: [categoria_solo]
+efeito: >
+  Contexto interpretativo: ao contrário da FUC-I (frentes estabilizadas), a
+  FUC-II está em transformação; admite reestruturação. A ficha reporta o
+  objectivo de consolidação e uniformidade da frente.
+papel_no_intervalo: nota
+clarificacoes:
+  - fonte: "Newsletter 1/2026 (Gestão Urbanística) — Área de frente urbana contínua de tipo II"
+    nota: >
+      A CMP emitiu orientação dedicada à FUC-II em Janeiro de 2026; verificar
+      cruzamento com a 2.ª alteração do RPDM (Abril 2025) na aplicação.

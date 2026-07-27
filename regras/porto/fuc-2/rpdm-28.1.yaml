@@ -1,0 +1,20 @@
+id: rpdm-28.1
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 28.º, n.º 1"
+categoria: frente_urbana_continua_tipo_II
+tema: permeabilidade_logradouro
+texto: >
+  Os logradouros e interior dos quarteirões devem ser permeáveis, sendo
+  ocupados por coberto vegetal, admitindo-se a criação de espaços de
+  circulação, e de estadia, e/ou um anexo com o máximo de 10 m2, desde que
+  não comprometa a existência de um índice de permeabilidade de 0,3 da área
+  da parcela.
+parametros:
+  indice_permeabilidade_min: 0.3
+  anexo_max_m2: 10
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Garante 0,3 da parcela permeável (coberto vegetal), complementar ao tecto
+  de impermeabilização de 0,7. Anexo até 10 m2 admitido.
+papel_no_intervalo: base

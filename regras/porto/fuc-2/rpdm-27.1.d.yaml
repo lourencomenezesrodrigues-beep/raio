@@ -1,0 +1,20 @@
+id: rpdm-27.1.d
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea d)"
+categoria: frente_urbana_continua_tipo_II
+tema: profundidade_piso_logradouro
+texto: >
+  No piso situado à cota do logradouro, admite-se o prolongamento
+  construtivo do edifício, não podendo ultrapassar a profundidade de 30
+  metros medidos a partir do alinhamento da frente urbana e quando não
+  resulte num índice de impermeabilização superior a 0,7 da área da parcela.
+parametros:
+  profundidade_max_m: 30
+  indice_impermeabilizacao_max: 0.7
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Tecto de profundidade do envelope: 30 m do alinhamento (contra 25 m na
+  FUC-I), cortado pela impermeabilização de 0,7. Prolongamento no piso à cota
+  do logradouro.
+papel_no_intervalo: base

@@ -158,9 +158,84 @@ def capacidade_moradia(parcela):
     }
 
 
+def capacidade_fuc2(parcela):
+    """Área de Frente Urbana Contínua de tipo II (RPDM 26.º-28.º).
+
+    Diferenças face à FUC-I: cércea regida pela largura do arruamento [27.1.g]
+    com tecto de 21 m se o perfil > 21 m salvo moda superior [27.2.b];
+    profundidade máxima de 30 m [27.1.d] (não 25 m); permeabilidade >= 0,3 [28.1].
+
+    parcela: area_m2, frente_m, profundidade_m, largura_arruamento_m (para a
+    cércea), moda_cercea_m (opcional, proxy/tecto), uso_habitacao_coletiva,
+    empena_confinante_m, gaveto."""
+    regras = carregar_regras("fuc-2", "transversais")  # noqa: F841
+    aplicadas, sup, notas = [], [], []
+
+    # cércea: largura do arruamento [27.1.g]; tecto 21 m se perfil>21, salvo moda [27.2.b]
+    larg = parcela.get("largura_arruamento_m")
+    moda = parcela.get("moda_cercea_m")
+    if larg is not None:
+        cercea = float(larg)
+        aplicadas.append("rpdm-27.1.g")
+        if larg > 21.0:
+            cercea = moda if (moda and moda > 21.0) else 21.0
+            aplicadas.append("rpdm-27.2.b")
+    elif moda is not None:
+        cercea = float(moda)
+        notas.append("rpdm-27.1.g: sem largura do arruamento medida — usada a moda "
+                     "da cércea como proxy da cércea admissível")
+    else:
+        return {"cercea_m": None, "pisos": None, "abc_min_m2": None, "abc_max_m2": None,
+                "regras_base": ["rpdm-27.1.g"], "regras_limite_superior": [],
+                "notas": ["cércea indeterminada: falta largura do arruamento ou moda"],
+                "incerteza": ""}
+    pisos = int(cercea // PE_DIREITO)  # cércea é tecto (<= largura); floor não excede
+
+    # profundidade: 30 m [27.1.d] e tardoz dominante [27.1.b]
+    prof = min(30.0, parcela["profundidade_m"])
+    aplicadas.extend(["rpdm-27.1.d", "rpdm-27.1.b"])
+    if parcela.get("uso_habitacao_coletiva"):
+        corte = max(6.0, cercea / 2.0)
+        prof = min(prof, parcela["profundidade_m"] - corte)
+        aplicadas.append("rgeu-62")
+
+    # implantação: impermeabilização <= 0,7 [27.1.c/d] e permeabilidade >= 0,3 [28.1]
+    implantacao = min(parcela["frente_m"] * prof, 0.7 * parcela["area_m2"])
+    aplicadas.extend(["rpdm-27.1.c", "rpdm-28.1"])
+    abc_min = implantacao * pisos
+
+    # limite superior: colmatação de empena [27.1.g], gaveto [27.1.f]
+    abc_max, sup = abc_min, []
+    if parcela.get("empena_confinante_m", 0) > cercea:
+        pisos_sup = int(arred_multiplo(parcela["empena_confinante_m"]) // PE_DIREITO)
+        abc_max = implantacao * pisos_sup
+        sup.append("rpdm-27.1.g (colmatação de empena)")
+    if parcela.get("gaveto"):
+        sup.append("rpdm-27.1.f")
+        notas.append("gaveto: dispensa possível de tardoz/cave/profundidade [27.1.f] — carece de análise")
+    if parcela["area_m2"] < 100:
+        notas.append("rpdm-27.1.e: parcela exígua/irregular — profundidade pelo tardoz "
+                     "dominante, argumentável")
+    notas.append("rpdm-26/27.4: FUC-II em transformação; podem ser impostas cérceas ou "
+                 "planos de fachada diferentes por salvaguarda patrimonial ou integração [27.4]")
+
+    return {
+        "cercea_m": cercea, "pisos": pisos,
+        "profundidade_util_m": round(prof, 1),
+        "implantacao_m2": round(implantacao, 1),
+        "abc_min_m2": round(abc_min), "abc_max_m2": round(abc_max),
+        "regras_base": aplicadas, "regras_limite_superior": sup,
+        "notas": notas,
+        "incerteza": ("Limite inferior: aplicação estrita do RPDM. Limite "
+                      "superior: excepções cuja aceitação depende de "
+                      "apreciação municipal."),
+    }
+
+
 # despacho categoria -> função de capacidade
 _CAPACIDADE = {
     "frente_urbana_continua_tipo_I": capacidade_fuc1,
+    "frente_urbana_continua_tipo_II": capacidade_fuc2,
     "edificios_tipo_moradia": capacidade_moradia,
 }
 
@@ -260,6 +335,12 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
     if slug == "frente_urbana_continua_tipo_I" and not parcela.get("moda_cercea_m"):
         out["estado"] = ("moda da cércea indeterminada (sem edificado detectado na "
                          "frente do ponto) — forneça moda_cercea_m para o cálculo")
+        return out
+    # FUC-II: cércea vem da largura do arruamento ou, na sua falta, da moda
+    if slug == "frente_urbana_continua_tipo_II" \
+            and not parcela.get("moda_cercea_m") and not parcela.get("largura_arruamento_m"):
+        out["estado"] = ("cércea indeterminada (sem edificado na frente nem largura de "
+                         "arruamento) — forneça moda_cercea_m ou largura_arruamento_m")
         return out
 
     out["capacidade"] = fn(parcela)

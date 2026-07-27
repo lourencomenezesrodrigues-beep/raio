@@ -1,0 +1,22 @@
+id: rpdm-27.1.g
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea g)"
+categoria: frente_urbana_continua_tipo_II
+tema: cercea
+texto: >
+  A cércea confinante com a via pública não pode exceder a largura do
+  arruamento confrontante, medida entre os limites do espaço público
+  dominante ou estabelecido, admitindo-se pisos recuados, desde que tais
+  sejam dominantes nessa frente urbana, ou sirvam de colmatação a empenas de
+  edifícios existentes a manter e garantam uma correta articulação
+  volumétrica com os mesmos.
+parametros:
+  cercea_max: largura_do_arruamento_confrontante
+  excecao: pisos_recuados_dominantes_ou_colmatacao_de_empena
+computabilidade: automatica_com_edificado
+entradas: [largura_arruamento, edificado_frente_urbana]
+efeito: >
+  Fixa a cércea base pela largura do arruamento (não pela moda, ao contrário
+  da FUC-I). Pisos recuados admitidos se dominantes ou em colmatação de
+  empena de edifícios a manter — alargam o limite superior.
+papel_no_intervalo: base

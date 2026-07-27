@@ -1,7 +1,7 @@
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "motor"))
-from engine import (capacidade_fuc1, capacidade_moradia, carregar_regras,
-                    analisar_ponto)
+from engine import (capacidade_fuc1, capacidade_fuc2, capacidade_moradia,
+                    carregar_regras, analisar_ponto)
 
 def test_regras_carregam():
     r = carregar_regras("fuc-1", "moradia", "transversais")
@@ -60,6 +60,33 @@ def test_analisar_ponto_sem_regras_com_aviso():
     # a condicionante de âmbito municipal não polui as efetivas
     assert [c["camada"] for c in r["condicionantes_efetivas"]] == ["Património edificado"]
 
+def test_fuc2_regras_carregam():
+    r = carregar_regras("fuc-2")
+    assert len(r) == 15, f"esperava 15 regras FUC-II, encontrei {len(r)}"
+    assert r["rpdm-27.1.d"]["parametros"]["profundidade_max_m"] == 30
+    assert r["rpdm-27.2.b"]["parametros"]["cercea_max_m"] == 21
+
+def test_fuc2_arruamento_estreito():
+    r = capacidade_fuc2(dict(area_m2=400, frente_m=12, profundidade_m=35,
+        largura_arruamento_m=15, uso_habitacao_coletiva=True))
+    assert r["cercea_m"] == 15            # <= 21: cércea = largura [27.1.g]
+    assert r["pisos"] == 5                # 15 // 3
+    assert r["profundidade_util_m"] == 27.5  # 35 - max(6, 15/2)
+    assert r["implantacao_m2"] == 280.0   # 0,7 × 400 corta 12×27.5
+    assert r["abc_min_m2"] == 1400
+    assert "rpdm-27.1.g" in r["regras_base"] and "rpdm-28.1" in r["regras_base"]
+
+def test_fuc2_arruamento_largo_teto_21():
+    r = capacidade_fuc2(dict(area_m2=500, frente_m=15, profundidade_m=40,
+        largura_arruamento_m=30))            # perfil > 21 e sem moda -> tecto 21 m
+    assert r["cercea_m"] == 21.0
+    assert "rpdm-27.2.b" in r["regras_base"]
+
+def test_fuc2_moda_supera_teto():
+    r = capacidade_fuc2(dict(area_m2=500, frente_m=15, profundidade_m=40,
+        largura_arruamento_m=30, moda_cercea_m=24))  # moda > 21 -> respeita moda
+    assert r["cercea_m"] == 24
+
 def test_metricas_parcela_alinhada():
     import parcela
     from shapely.geometry import LineString, Polygon
@@ -87,5 +114,7 @@ if __name__ == "__main__":
     test_regras_carregam(); test_caso_sintetico()
     test_moradia_sintetico(); test_moradia_parcela_grande()
     test_analisar_ponto_despacho_fuc1(); test_analisar_ponto_sem_regras_com_aviso()
+    test_fuc2_regras_carregam(); test_fuc2_arruamento_estreito()
+    test_fuc2_arruamento_largo_teto_21(); test_fuc2_moda_supera_teto()
     test_metricas_parcela_alinhada(); test_metricas_parcela_rodada()
     print("todos os testes passam")

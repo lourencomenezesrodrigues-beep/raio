@@ -1,0 +1,19 @@
+id: rpdm-27.1.a
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea a)"
+categoria: frente_urbana_continua_tipo_II
+tema: alinhamento_frontal
+texto: >
+  Cumprimento dos alinhamentos e das formas de relação do edifício com o
+  espaço público dominante na frente urbana em que a parcela se integra,
+  exceto nas situações em que já se tenham estabelecido ou se venham a
+  estabelecer novos alinhamentos.
+parametros:
+  referencia: alinhamento_dominante_da_frente_urbana
+computabilidade: semi
+entradas: [edificado_frente_urbana]
+efeito: >
+  Fixa o plano frontal do envelope pelo alinhamento dominante. Novos
+  alinhamentos estabelecidos pela CMP não são conhecíveis: declarar como
+  pressuposto.
+papel_no_intervalo: base

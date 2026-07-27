@@ -1,0 +1,15 @@
+id: rpdm-27.2.a
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 2, alínea a)"
+categoria: frente_urbana_continua_tipo_II
+tema: cercea_alargamento_pontual
+texto: >
+  Quando o perfil transversal do espaço público ou via pública confinantes
+  com uma frente urbana tiver um alargamento pontual numa dada extensão, a
+  cércea é a admitida para a restante frente urbana.
+computabilidade: apreciacao
+entradas: [perfil_transversal_via]
+efeito: >
+  Evita que um alargamento pontual da via aumente a cércea: usa-se a cércea
+  da restante frente. Requer leitura do perfil — reportar como nota.
+papel_no_intervalo: nota

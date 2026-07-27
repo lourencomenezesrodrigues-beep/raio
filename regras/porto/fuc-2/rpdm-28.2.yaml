@@ -1,0 +1,17 @@
+id: rpdm-28.2
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 28.º, n.º 2"
+categoria: frente_urbana_continua_tipo_II
+tema: divisao_quarteirao
+texto: >
+  Admite-se a divisão de um quarteirão quando se considerar que, pela sua
+  significativa dimensão e desejável alteração dos usos e ocupação existentes
+  no seu interior, a mesma contribui para a qualificação urbanística e
+  ambiental dessa zona da cidade, ou para a melhoria das condições de
+  circulação viária.
+computabilidade: apreciacao
+entradas: [quarteirao]
+efeito: >
+  Excepção de escala urbana: divisão de quarteirões de grande dimensão.
+  Discricionária; carece de análise, fora do envelope da parcela.
+papel_no_intervalo: excecao_superior

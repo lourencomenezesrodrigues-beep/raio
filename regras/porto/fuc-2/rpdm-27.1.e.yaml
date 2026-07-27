@@ -1,0 +1,19 @@
+id: rpdm-27.1.e
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea e)"
+categoria: frente_urbana_continua_tipo_II
+tema: parcela_exigua
+texto: >
+  Na construção de novos edifícios ou ampliação de edifícios existentes em
+  parcela cuja exígua dimensão e configuração irregular não permita
+  satisfazer em simultâneo o cumprimento do índice de impermeabilização e o
+  alinhamento da fachada de tardoz de acordo com, respetivamente, as alíneas
+  anteriores b) e d), a profundidade máxima é definida pelo alinhamento de
+  tardoz dominante.
+computabilidade: apreciacao
+entradas: [poligono_parcela, alinhamento_tardoz_dominante]
+efeito: >
+  Excepção para parcelas exíguas/irregulares: profundidade pelo tardoz
+  dominante quando impossível cumprir 0,7 + tardoz. Sem limiar quantificado
+  de "exígua": assinalar como argumentável.
+papel_no_intervalo: nota

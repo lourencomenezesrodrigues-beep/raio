@@ -1,0 +1,17 @@
+id: rpdm-27.1.f
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea f)"
+categoria: frente_urbana_continua_tipo_II
+tema: gaveto
+texto: >
+  Na construção de novos edifícios ou ampliação de edifícios existentes, em
+  parcela de gaveto, deverão privilegiar-se soluções arquitetónicas
+  adequadas ao conveniente remate urbano das respetivas frentes,
+  dispensando-se, se necessário, do cumprimento do disposto nas alíneas b),
+  c) e d) deste número.
+computabilidade: apreciacao
+entradas: [gaveto]
+efeito: >
+  Parcela de gaveto: possível dispensa de tardoz [b], cave [c] e
+  profundidade [d] — alarga o limite superior, carece de análise.
+papel_no_intervalo: excecao_superior

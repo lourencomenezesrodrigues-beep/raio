@@ -1,0 +1,17 @@
+id: rpdm-27.1.b
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea b)"
+categoria: frente_urbana_continua_tipo_II
+tema: alinhamento_tardoz
+texto: >
+  O alinhamento da fachada de tardoz do corpo dominante do edifício é o
+  definido pelo alinhamento de tardoz do corpo dominante dos edifícios a
+  manter nessa frente urbana.
+parametros:
+  referencia: alinhamento_tardoz_dominante
+computabilidade: automatica_com_edificado
+entradas: [edificado_frente_urbana]
+efeito: >
+  Fixa a profundidade do corpo dominante pelo tardoz dos edifícios a manter.
+  Combina-se com o tecto de 30 m da alínea d).
+papel_no_intervalo: base

@@ -1,0 +1,17 @@
+id: rpdm-27.3
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 3"
+categoria: frente_urbana_continua_tipo_II
+tema: ocupacao_excedentaria_logradouro
+texto: >
+  Nas situações em que se verifique uma ocupação existente no logradouro que
+  ultrapasse os parâmetros aplicáveis nesta subcategoria, apenas se admite
+  nova construção ou a ampliação do edifício situado na frente urbana, se
+  ocorrer demolição de área de edificação equivalente no logradouro, sem
+  prejuízo do disposto na alínea c) do n.º 1 do presente artigo.
+computabilidade: semi
+entradas: [ocupacao_logradouro]
+efeito: >
+  Ocupação excedentária no logradouro: nova construção condicionada a
+  demolição equivalente. Desconto reportado em separado.
+papel_no_intervalo: nota

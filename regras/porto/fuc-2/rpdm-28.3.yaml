@@ -1,0 +1,23 @@
+id: rpdm-28.3
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 28.º, n.º 3"
+categoria: frente_urbana_continua_tipo_II
+tema: divisao_quarteirao_regras
+texto: >
+  Na situação do número anterior, cumulativamente com as disposições
+  constantes desta secção, devem verificar-se as seguintes regras: a) O novo
+  arruamento que divide o quarteirão existente deve ter um traçado que
+  permita estabelecer a ligação rodoviária entre dois arruamentos já
+  existentes e o seu perfil deve ser ajustado aos perfis destes arruamentos,
+  admitindo-se, excecionalmente, soluções mistas (rodoviária e pedonal) de
+  atravessamento de quarteirões, desde que seja esta a única solução viável
+  face a condições biofísicas do local, comprovada através de estudo
+  urbanístico municipal; b) A cércea dos edifícios a implantar à face do novo
+  arruamento deve garantir uma correta articulação com as cérceas das frentes
+  urbanas em que se apoia o novo arruamento.
+computabilidade: apreciacao
+entradas: [quarteirao]
+efeito: >
+  Regras do novo arruamento na divisão do quarteirão. Só relevante em fase de
+  estudo urbanístico; nota.
+papel_no_intervalo: nota

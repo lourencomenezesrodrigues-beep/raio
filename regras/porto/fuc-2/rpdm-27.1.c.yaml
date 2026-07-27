@@ -1,0 +1,18 @@
+id: rpdm-27.1.c
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 1, alínea c)"
+categoria: frente_urbana_continua_tipo_II
+tema: cave
+texto: >
+  Admite-se a construção em cave, para além do plano da fachada de tardoz do
+  corpo dominante, quando não resulte num índice de impermeabilização
+  superior a 0,7 da área da parcela, e desde que esta se situe abaixo da cota
+  do logradouro.
+parametros:
+  indice_impermeabilizacao_max: 0.7
+computabilidade: automatica
+entradas: [poligono_parcela]
+efeito: >
+  Permite cave além do tardoz, abaixo da cota do logradouro, limitada pela
+  impermeabilização de 0,7. Reportada em separado, abaixo do solo.
+papel_no_intervalo: base

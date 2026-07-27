@@ -1,0 +1,16 @@
+id: rpdm-27.4
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 27.º, n.º 4"
+categoria: frente_urbana_continua_tipo_II
+tema: salvaguarda_patrimonial
+texto: >
+  Podem ser impostas cérceas e planos de fachadas diferentes das resultantes
+  da aplicação dos números anteriores deste artigo, quando estiver em causa a
+  salvaguarda de valores patrimoniais ou a integração urbanística no conjunto
+  edificado onde a parcela se localiza.
+computabilidade: apreciacao
+entradas: [carta_patrimonio]
+efeito: >
+  Cláusula de salvaguarda: a CMP pode impor cérceas/fachadas diferentes por
+  razões patrimoniais ou de integração. Aviso patrimonial; carece de análise.
+papel_no_intervalo: nota
