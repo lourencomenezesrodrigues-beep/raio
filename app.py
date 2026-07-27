@@ -86,9 +86,11 @@ class Handler(BaseHTTPRequestHandler):
         qs = parse_qs(u.query)
         try:
             if u.path in ("/", "/index.html"):
+                return self._serve_static("index.html")
+            if u.path in ("/mapa", "/mapa.html", "/app"):
                 return self._serve_static("mapa.html")
             if u.path.startswith("/web/"):
-                return self._serve_static(os.path.basename(u.path))
+                return self._serve_static(u.path[len("/web/"):])
 
             if u.path == "/api/geocode":
                 q = (qs.get("q") or [""])[0]
@@ -133,13 +135,14 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:  # noqa: BLE001
             self._send(500, {"erro": str(e)})
 
-    def _serve_static(self, nome):
-        caminho = os.path.join(WEB, nome)
-        if not os.path.isfile(caminho):
-            return self._send(404, {"erro": f"não encontrado: {nome}"})
-        ext = os.path.splitext(nome)[1]
+    def _serve_static(self, rel):
+        caminho = os.path.normpath(os.path.join(WEB, rel))
+        if not caminho.startswith(os.path.normpath(WEB)) or not os.path.isfile(caminho):
+            return self._send(404, {"erro": f"não encontrado: {rel}"})
+        ext = os.path.splitext(caminho)[1].lower()
         ctype = {".html": "text/html; charset=utf-8", ".js": "text/javascript",
-                 ".css": "text/css"}.get(ext, "application/octet-stream")
+                 ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png"}.get(
+                     ext, "application/octet-stream")
         with open(caminho, "rb") as f:
             self._send(200, f.read(), ctype=ctype)
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 110" width="400" height="110">
+  <g transform="translate(4,5)">
+    <path d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z" fill="none" stroke="#F03C2E" stroke-width="9" stroke-linejoin="miter"></path>
+  </g>
+  <text x="112" y="80" font-family="Archivo, Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="72" letter-spacing="-1.5" fill="#16161A">RAIO</text>
+</svg>
