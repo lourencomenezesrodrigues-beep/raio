@@ -5,7 +5,9 @@ services:
     name: raio
     runtime: docker
     dockerfilePath: ./Dockerfile
-    region: frankfurt          # EU, perto de Portugal
+    region: virginia           # US-East. Frankfurt foi bloqueado pelo geoserver da CMP
+                               # (500 ao IP do Render). IP dos EUA é aceite. Custo: +latência
+                               # nas chamadas à CMP (atravessa o Atlântico). Rever se for lento.
     plan: starter              # ~7 USD/mês (não adormece). "free" existe mas dorme e tem menos RAM.
     healthCheckPath: /
     autoDeploy: true
