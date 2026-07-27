@@ -227,6 +227,7 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
         "categoria": cat.get("sc_espaco"),
         "categoria_cod": cat.get("sc_espaco_cod"),
         "categoria_slug": slug,
+        "regras_implementadas": slug in _CAPACIDADE,
         "operativa": (consulta.get("operativa") or {}).get("t_espaco"),
         "condicionantes_efetivas": efetivas,
         "condicionantes_ambito_municipal": municipais,

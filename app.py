@@ -52,6 +52,7 @@ def _resumo_ponto(res):
         "categoria": res.get("categoria"),
         "categoria_cod": res.get("categoria_cod"),
         "categoria_slug": res.get("categoria_slug"),
+        "regras_implementadas": res.get("regras_implementadas"),
         "operativa": res.get("operativa"),
         "estado": res.get("estado"),
         "condicionantes_efetivas": res.get("condicionantes_efetivas"),

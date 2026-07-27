@@ -171,9 +171,11 @@ function render(d, fichaHref){
   const warnKeys = ["patrim","imóveis classificados","hídric","domínio público","servidão","non aedificandi"];
   const isWarn = c => warnKeys.some(k => (c.camada||"").toLowerCase().includes(k));
   const slug = d.categoria_slug;
-  const badge = slug
+  const badge = d.regras_implementadas
     ? `<span class="badge ok">regras: ${slug}</span>`
-    : `<span class="badge no">categoria sem regras — carece de análise</span>`;
+    : slug
+      ? `<span class="badge no">categoria reconhecida — regras por implementar</span>`
+      : `<span class="badge no">fora do solo qualificado — carece de análise</span>`;
   let h = `<div class="k">Categoria de solo</div>
     <div class="cat">${d.categoria||"—"}</div>
     <div class="cod">${d.categoria_cod||""}${d.operativa? " · "+d.operativa:""}</div>${badge}`;
