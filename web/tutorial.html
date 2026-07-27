@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAIO — como funciona</title>
+<link rel="icon" href="/web/brand/raio-4a-favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16161A; --vermelhao:#F03C2E; --paper:#F7F6F3;
+    --line:rgba(22,22,26,.16); --line-strong:rgba(22,22,26,.30); --muted:rgba(22,22,26,.60);
+    --verm-soft:rgba(240,60,46,.07); --ease-out:cubic-bezier(.23,1,.32,1);
+    --archivo:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--mono);line-height:1.7}
+  a{color:inherit}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 34px}
+
+  header{display:flex;align-items:center;justify-content:space-between;padding:22px 0;
+    border-bottom:1px solid var(--line);margin-bottom:8px}
+  header .lk{display:flex;align-items:center;gap:12px}
+  header svg{width:30px;height:30px}
+  header .wm{font-family:var(--archivo);font-weight:900;font-size:21px;letter-spacing:-.03em;text-transform:uppercase}
+  header .back{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
+  header .back:hover{color:var(--ink)}
+
+  .hero{padding:56px 0 30px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--vermelhao)}
+  h1{font-family:var(--archivo);font-weight:900;text-transform:uppercase;font-size:clamp(38px,7vw,74px);
+    line-height:.95;letter-spacing:-.03em;margin:12px 0 18px;text-wrap:balance}
+  .hero p{font-family:var(--mono);font-size:13px;letter-spacing:.03em;color:var(--muted);max-width:60ch;margin:0}
+
+  .step{display:grid;grid-template-columns:88px 1fr 1fr;gap:28px;align-items:center;
+    padding:40px 0;border-top:1px solid var(--line)}
+  @media (max-width:760px){ .step{grid-template-columns:1fr;gap:18px} .step .viz{order:3} }
+  .step .n{font-family:var(--archivo);font-weight:900;font-size:60px;line-height:1;color:var(--line-strong)}
+  .step.on .n{color:var(--vermelhao)}
+  .step .t{font-family:var(--archivo);font-weight:800;text-transform:uppercase;font-size:22px;
+    letter-spacing:-.01em;line-height:1.1;margin:0 0 10px}
+  .step .d{font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--muted);line-height:1.7;margin:0}
+  .step .d b{color:var(--ink);font-weight:500}
+  .viz{border:1px solid var(--ink);background:var(--paper);height:200px;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center}
+  .step{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+  .step.on{opacity:1;transform:none}
+
+  /* viz 1: pesquisa/ponto */
+  .viz-busca{width:78%}
+  .viz-busca .bar{display:flex;border:1px solid var(--ink)}
+  .viz-busca .bar .q{flex:1;padding:10px 12px;font-size:12px;color:var(--muted)}
+  .viz-busca .bar .go{background:var(--ink);color:var(--paper);padding:10px 14px;font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase}
+  .viz-busca .pin{margin:16px auto 0;width:11px;height:11px;background:var(--vermelhao);
+    box-shadow:0 0 0 2px var(--paper),0 0 0 3px var(--vermelhao)}
+  /* viz 2: desenho (o traçado fecha-se) */
+  .viz svg.sym{width:150px;height:150px}
+  .sym .grid{opacity:.14}
+  .sym-fill{fill:var(--vermelhao);opacity:0}
+  .sym-stroke{fill:none;stroke:var(--vermelhao);stroke-width:9;stroke-linejoin:miter;
+    stroke-dasharray:320;stroke-dashoffset:320}
+  .step.on .sym-stroke{animation:draw 1.3s var(--ease-out) .15s forwards}
+  .step.on .sym-fill{animation:clarao .5s ease-out 1.4s forwards}
+  /* viz 3: formulário */
+  .viz-form{width:80%;font-size:10px}
+  .viz-form .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .viz-form .fld{border:1px solid var(--line-strong);padding:8px 10px;margin-bottom:7px;color:var(--muted);font-size:11px}
+  .viz-form .cb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+  .viz-form .cb i{width:13px;height:13px;border:1px solid var(--vermelhao);background:var(--vermelhao)}
+  /* viz 4: resultado */
+  .viz-res{width:82%;text-align:left}
+  .viz-res .cat{font-family:var(--archivo);font-weight:800;text-transform:uppercase;font-size:13px;margin-bottom:8px}
+  .viz-res .abc{font-family:var(--mono);font-weight:500;font-size:34px;letter-spacing:-.02em}
+  .viz-res .abc .u{font-size:13px;color:var(--muted)}
+  .viz-res .spec{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.04em;margin-top:4px}
+
+  .cta-row{padding:48px 0 70px;border-top:1px solid var(--line);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .cta{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);
+    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    padding:15px 24px;text-decoration:none;transition:background .16s var(--ease-out)}
+  .cta:hover{background:var(--vermelhao)}
+  .cta .arw{font-family:var(--archivo);font-weight:900;font-size:15px}
+  .foot-note{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes clarao{to{opacity:.1}}
+  @media (prefers-reduced-motion:reduce){
+    .step{opacity:1;transform:none;transition:none}
+    .sym-stroke{stroke-dashoffset:0;animation:none} .sym-fill{opacity:.1;animation:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="lk" href="/">
+      <svg viewBox="0 0 100 100"><path d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z" fill="none" stroke="#F03C2E" stroke-width="9" stroke-linejoin="miter"></path></svg>
+      <span class="wm">RAIO</span>
+    </a>
+    <a class="back" href="/mapa">Abrir o mapa →</a>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Como funciona</div>
+    <h1>Do terreno<br>à capacidade<br>em quatro passos</h1>
+    <p>Exemplo real: um terreno em Área de Edifícios de Tipo Moradia, com ~320 m². O RAIO lê a
+      qualificação e as condicionantes do PDM, simula uma ocupação que cumpre as regras, e devolve
+      a área bruta de construção — com a ficha e os artigos aplicados.</p>
+  </section>
+
+  <div class="step" data-step>
+    <div class="n">01</div>
+    <div>
+      <p class="t">Localizar o terreno</p>
+      <p class="d">Pesquisa a <b>morada</b> ou <b>clica no ponto</b> no mapa. O RAIO identifica a
+        categoria de solo e as servidões que impendem sobre esse local.</p>
+    </div>
+    <div class="viz"><div class="viz-busca">
+      <div class="bar"><div class="q">Rua de … , Porto</div><div class="go">Ir</div></div>
+      <div class="pin"></div>
+    </div></div>
+  </div>
+
+  <div class="step" data-step>
+    <div class="n">02</div>
+    <div>
+      <p class="t">Desenhar o contorno</p>
+      <p class="d">Marca os <b>vértices do lote</b> no mapa e fecha o polígono. Deste contorno saem a
+        <b>área</b>, a <b>frente</b> à rua e a <b>profundidade</b> — sem precisares de os medir.</p>
+    </div>
+    <div class="viz"><svg class="sym" viewBox="0 0 100 100">
+      <path class="sym-fill" d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z"></path>
+      <path class="sym-stroke" d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z"></path>
+    </svg></div>
+  </div>
+
+  <div class="step" data-step>
+    <div class="n">03</div>
+    <div>
+      <p class="t">Preencher o que não é automático</p>
+      <p class="d">Alguns dados dependem do projecto: <b>uso</b>, <b>largura do arruamento</b>,
+        <b>colmatação</b>, <b>gaveto</b>. Preenche o que souberes — recalcula na hora.</p>
+    </div>
+    <div class="viz"><div class="viz-form">
+      <div class="k">Parâmetros (não automáticos)</div>
+      <div class="fld">Moda da cércea — m</div>
+      <div class="cb"><i></i> Colmatação de conjunto consolidado</div>
+    </div></div>
+  </div>
+
+  <div class="step" data-step>
+    <div class="n">04</div>
+    <div>
+      <p class="t">Ler a capacidade</p>
+      <p class="d">O RAIO simula a ocupação — <b>impermeabilização, afastamentos e logradouro</b> ao
+        mesmo tempo — e devolve a <b>ABC</b>, a cércea e os pisos. A <b>ficha</b> traz os excertos das
+        normas aplicadas, com artigo e regulamento.</p>
+    </div>
+    <div class="viz"><div class="viz-res">
+      <div class="cat">Área de edifícios de tipo moradia</div>
+      <div class="abc">372 <span class="u">m² ABC</span></div>
+      <div class="spec">cércea 9 m · 3 pisos · implantação 192 m²</div>
+    </div></div>
+  </div>
+
+  <div class="cta-row">
+    <a class="cta" href="/mapa">Experimentar agora <span class="arw">→</span></a>
+    <span class="foot-note">Análise não vinculativa · Dinosaur Ideas</span>
+  </div>
+</div>
+
+<script>
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("on"); io.unobserve(e.target); } });
+  }, {threshold:.35});
+  document.querySelectorAll("[data-step]").forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

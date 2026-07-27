@@ -104,6 +104,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._serve_static("index.html")
             if u.path in ("/mapa", "/mapa.html", "/app"):
                 return self._serve_static("mapa.html")
+            if u.path in ("/tutorial", "/tutorial.html", "/como-funciona"):
+                return self._serve_static("tutorial.html")
             if u.path.startswith("/web/"):
                 return self._serve_static(u.path[len("/web/"):])
 
