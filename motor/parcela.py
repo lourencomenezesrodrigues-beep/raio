@@ -48,9 +48,15 @@ def metricas_de_poligono(poligono, *, eixo=None):
     if eixo is None:
         ei = _frente.eixo_no_ponto(c.x, c.y)
         if ei is None:
-            return {"area_m2": round(poly.area, 1), "frente_m": None,
-                    "profundidade_m": None, "rua": None,
-                    "aviso": "sem rua Overture: frente/profundidade não estimadas"}
+            # sem rua: rectângulo mínimo do lote (lado menor = frente, maior = profundidade)
+            xy = list(poly.minimum_rotated_rectangle.exterior.coords)
+            lados = [math.hypot(xy[i + 1][0] - xy[i][0], xy[i + 1][1] - xy[i][1])
+                     for i in range(4)]
+            return {"area_m2": round(poly.area, 1),
+                    "frente_m": round(min(lados[0], lados[1]), 1),
+                    "profundidade_m": round(max(lados[0], lados[1]), 1),
+                    "rua": None,
+                    "aviso": "sem rua Overture: frente/profundidade estimadas pelo lote"}
         eixo, rua = ei["lanco"], ei["rua"]
 
     ux, uy = _direcao_eixo(eixo, c)   # ao longo da rua

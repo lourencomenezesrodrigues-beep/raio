@@ -50,14 +50,20 @@ def capacidade_fuc1(parcela):
     regras = carregar_regras("fuc-1", "transversais")
     aplicadas, notas = [], []
 
-    # cércea: moda (24.1.e, tolerância declarada) vs 45º (rgeu-59)
-    moda = arred_multiplo(parcela["moda_cercea_m"])
-    aplicadas.append("rpdm-24.1.e")
-    cercea = moda
-    if parcela.get("largura_arruamento_m"):
-        if parcela["largura_arruamento_m"] < cercea:
-            cercea = parcela["largura_arruamento_m"]
+    # cércea: moda (24.1.e) cortada pela linha dos 45º / largura do arruamento (rgeu-59)
+    moda = parcela.get("moda_cercea_m")
+    larg = parcela.get("largura_arruamento_m")
+    if moda is not None:
+        cercea = arred_multiplo(moda)
+        aplicadas.append("rpdm-24.1.e")
+        if larg and larg < cercea:
+            cercea = float(larg)
             aplicadas.append("rgeu-59")
+    else:  # sem moda: a largura do arruamento é o tecto (RGEU 59.º / 45.º)
+        cercea = float(larg)
+        aplicadas.append("rgeu-59")
+        notas.append(f"Sem moda da cércea detectada; usada a largura do arruamento "
+                     f"({larg:.1f} m) como tecto pela linha dos 45.º (RGEU 59.º).")
     pisos = int(cercea // PE_DIREITO)
 
     # profundidade: 25 m (24.1.d), tardoz dominante (24.1.b) fora deste esqueleto
@@ -472,10 +478,11 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
         if finfo.get("largura_arruamento_m") and falta_larg:
             parcela = {**parcela, "largura_arruamento_m": finfo["largura_arruamento_m"]}
 
-    # FUC-I depende sempre da moda da cércea; se indeterminável, não a inventamos
-    if slug == "frente_urbana_continua_tipo_I" and not parcela.get("moda_cercea_m"):
-        out["estado"] = ("moda da cércea indeterminada (sem edificado detectado na "
-                         "frente do ponto) — forneça moda_cercea_m para o cálculo")
+    # FUC-I: cércea da moda, ou da largura do arruamento (tecto 45º) se não houver moda
+    if slug == "frente_urbana_continua_tipo_I" \
+            and not parcela.get("moda_cercea_m") and not parcela.get("largura_arruamento_m"):
+        out["estado"] = ("cércea indeterminada (sem edificado na frente nem largura de "
+                         "arruamento) — forneça a moda da cércea ou a largura do arruamento")
         return out
     # FUC-II: cércea vem da largura do arruamento ou, na sua falta, da moda
     if slug == "frente_urbana_continua_tipo_II" \
