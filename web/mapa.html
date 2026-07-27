@@ -167,6 +167,11 @@ map.on(L.Draw.Event.CREATED, e=>{
   const ll = e.layer.getLatLngs()[0].map(p=>[p.lat,p.lng]);
   analisarParcela(ll, {});
 });
+// enquanto se desenha (e logo a seguir), o clique de fecho não deve disparar
+// uma análise de ponto que sobrepõe a da parcela.
+let desenhando = false;
+map.on(L.Draw.Event.DRAWSTART, ()=>{ desenhando = true; });
+map.on(L.Draw.Event.DRAWSTOP, ()=>{ setTimeout(()=>{ desenhando = false; }, 350); });
 let ultimoLatlngs = null, ultimoExtra = {};
 
 let marca = null;
@@ -177,7 +182,7 @@ function ponto(lat, lon){
   drawn.clearLayers();
   analisarPonto(lat, lon);
 }
-map.on("click", e => { ponto(e.latlng.lat, e.latlng.lng); });
+map.on("click", e => { if(desenhando) return; ponto(e.latlng.lat, e.latlng.lng); });
 
 document.getElementById("busca").addEventListener("submit", async e => {
   e.preventDefault();

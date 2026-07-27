@@ -449,9 +449,9 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
                          f" — carece de análise")
         return out
     if parcela is None:
-        out["estado"] = ("categoria coberta; forneça a parcela "
-                         "(area_m2, frente_m, profundidade_m, moda_cercea_m) "
-                         "para calcular o intervalo")
+        out["estado"] = ("Categoria coberta pelas regras. Desenha o contorno do terreno "
+                         "no mapa (ferramenta de polígono, canto superior esquerdo) para "
+                         "calcular a capacidade construtiva.")
         return out
 
     # A frente (moda da cércea + largura do arruamento) só é precisa nas FUC e
