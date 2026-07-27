@@ -260,7 +260,7 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
                     out.append(f'<div class="cond-map" style="--map-base:url(\'{mapbase}\')">')
                     out.append(f'<img class="over" src="{over}" alt="Excerto do mapa — {_e(c["camada"])}">')
                     out.append('<span class="pin"></span>')
-                    out.append('<span class="attr">© Esri · CM Porto — PDM 2021</span>')
+                    out.append('<span class="attr">© CM Porto · Mapas do Porto — PDM 2021</span>')
                     out.append('</div>')
             out.append('</div>')
         out.append('</div>')
