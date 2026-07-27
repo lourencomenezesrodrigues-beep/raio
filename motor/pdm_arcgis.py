@@ -219,6 +219,36 @@ def _attr(attrs: dict, *nomes: str):
     return None
 
 
+def categoria_dominante(poly) -> dict | None:
+    """Categoria de solo DOMINANTE (por área) sob um polígono (shapely, EPSG:3763).
+
+    Corrige o viés do centróide: um terreno desenhado que cruze uma parcela de
+    equipamento embebida num bairro é classificado pela subcategoria que ocupa
+    maior área do polígono, não pelo ponto central.
+    """
+    from shapely.geometry import shape
+    ext = [[float(x), float(y)] for x, y in poly.exterior.coords]
+    geom = {"rings": [ext], "spatialReference": {"wkid": WKID}}
+    fc = query_layer("PO1A_QS", 8, geometry=geom, geometry_type="esriGeometryPolygon",
+                     out_fields="sc_espaco")
+    areas: dict[str, float] = {}
+    for f in fc["features"]:
+        cod = (f.get("properties") or {}).get("sc_espaco")
+        if not cod:
+            continue
+        try:
+            inter = poly.intersection(shape(f["geometry"])).area
+        except Exception:
+            inter = 0.0
+        areas[cod] = areas.get(cod, 0.0) + inter
+    if not areas:
+        return None
+    dom = max(areas, key=areas.get)
+    label = _domains("PO1A_QS", 8).get("sc_espaco", {}).get(dom, dom)
+    return {"sc_espaco_cod": dom, "sc_espaco": label, "slug": slug_categoria(dom),
+            "fracao": round(areas[dom] / (poly.area or 1), 2)}
+
+
 def consultar_ponto(x: float, y: float, *, tolerancia_m: float = 1.0) -> dict:
     """Consulta por ponto (EPSG:3763): categoria de solo + condicionantes.
 

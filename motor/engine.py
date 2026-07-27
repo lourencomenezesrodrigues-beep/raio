@@ -29,6 +29,20 @@ def arred_multiplo(valor, passo=3.0):
     return round(valor / passo) * passo
 
 
+_TODAS_REGRAS = None
+
+
+def regra(rid):
+    """Detalhe de uma norma pelo id (id, norma, diploma, texto, tema) ou None."""
+    global _TODAS_REGRAS
+    if _TODAS_REGRAS is None:
+        _TODAS_REGRAS = {}
+        for f in (RAIZ / "regras" / "porto").rglob("*.yaml"):
+            d = yaml.safe_load(f.read_text(encoding="utf-8"))
+            _TODAS_REGRAS[d["id"]] = d
+    return _TODAS_REGRAS.get(rid)
+
+
 def capacidade_fuc1(parcela):
     """parcela: dict com area_m2, frente_m, profundidade_m, moda_cercea_m,
     largura_arruamento_m, uso_habitacao_coletiva (bool),
@@ -485,10 +499,23 @@ def analisar_parcela(poligono, *, auto_moda=True, extra=None, consulta=None):
     parcela (ex.: uso_habitacao_coletiva, colmatacao_consolidado, gaveto).
     """
     import parcela as _parcela
+    import pdm_arcgis
     from shapely import wkt as _wkt
     poly = _wkt.loads(poligono) if isinstance(poligono, str) else poligono
     c = poly.centroid
     parcela, metricas = _parcela.parcela_para_engine(poly, extra=extra)
+    if consulta is None:
+        consulta = pdm_arcgis.consultar_ponto(c.x, c.y)
+        try:  # categoria DOMINANTE por área (corrige centróide em parcela embebida)
+            dom = pdm_arcgis.categoria_dominante(poly)
+        except Exception:
+            dom = None
+        if dom and dom.get("sc_espaco_cod") and \
+                dom["sc_espaco_cod"] != (consulta.get("categoria") or {}).get("sc_espaco_cod"):
+            cat = dict(consulta.get("categoria") or {})
+            cat["sc_espaco"], cat["sc_espaco_cod"] = dom["sc_espaco"], dom["sc_espaco_cod"]
+            consulta["categoria"] = cat
+            consulta["categoria_slug"] = dom["slug"]
     out = analisar_ponto(c.x, c.y, parcela, consulta=consulta, auto_moda=auto_moda)
     out["parcela_metricas"] = metricas
     return out

@@ -113,6 +113,11 @@ def ficha_markdown(res: dict) -> str:
             L.append(f"- **Limite superior:** {', '.join(sup)}")
         for n in cap.get("notas") or []:
             L.append(f"- _Nota:_ {n}")
+        exc = _regras_excertos(cap)
+        if exc:
+            L.append("\n**Excertos das normas aplicadas**")
+            for norma, dip, txt in exc:
+                L.append(f"- **{norma}** ({dip})  \n  {txt}")
         L.append("")
 
     # --- Conclusão (no fim) -----------------------------------------------
@@ -163,6 +168,27 @@ def _num(v, u=""):
         v = int(v)
     us = f'<span class="u">{u}</span>' if u else ""
     return f"{v}{us}"
+
+
+def _id_limpo(rid):
+    return rid.split(" ")[0].split("(")[0].strip()
+
+
+def _regras_excertos(cap):
+    """[(norma, diploma, texto)] das normas aplicadas, sem repetir."""
+    import engine
+    ids, vistos = [], set()
+    for rid in (cap.get("regras_base") or []) + (cap.get("regras_limite_superior") or []):
+        cid = _id_limpo(rid)
+        if cid and cid not in vistos:
+            vistos.add(cid); ids.append(cid)
+    out = []
+    for cid in ids:
+        r = engine.regra(cid)
+        if r:
+            out.append((r.get("norma") or cid, r.get("diploma") or "",
+                        " ".join((r.get("texto") or "").split())))
+    return out
 
 
 DISCLAIMER_CAPA = (
@@ -336,6 +362,15 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
         if notas:
             out.append('<ul class="notas">'
                        + "".join(f'<li>{_e(n)}</li>' for n in notas) + '</ul>')
+        exc = _regras_excertos(cap)
+        if exc:
+            out.append('<div class="rgroup" style="margin-top:16px">'
+                       '<div class="lbl">Excertos das normas aplicadas</div>')
+            for norma, dip, txt in exc:
+                out.append(f'<div class="regra-exc"><div class="rlabel">{_e(norma)}'
+                           f'<span class="rdip"> · {_e(dip)}</span></div>'
+                           f'<div class="rtexto">{_e(txt)}</div></div>')
+            out.append('</div>')
         out.append('</section>')
 
     # conclusão
