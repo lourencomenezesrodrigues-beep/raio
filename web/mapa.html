@@ -138,20 +138,11 @@
   <div id="mapa"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 <script>
-const PDM = "https://fedservergeo.cm-porto.pt/arcgis/rest/services/PDM2021";
-
 const map = L.map("mapa", {zoomControl:true}).setView([41.1496,-8.6109], 14);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {maxZoom:19, attribution:"© OpenStreetMap"}).addTo(map);
-// Camadas do PDM da CMP (reprojectam no export, ao contrário da base cache).
-const qualif = L.esri.dynamicMapLayer({url:`${PDM}/PO1A_QS/MapServer`, layers:[8], opacity:0.5}).addTo(map);
-const cond = L.esri.dynamicMapLayer({url:`${PDM}/CCGD_PUBLICACAO/MapServer`, opacity:0.6});
-L.control.layers({},
-  {"Qualificação do solo":qualif, "Condicionantes":cond},
-  {collapsed:false}).addTo(map);
 
 // desenho do terreno -> capacidade
 const drawn = new L.FeatureGroup().addTo(map);
