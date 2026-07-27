@@ -57,7 +57,7 @@ def gerar():
  .ex-label .h{height:1px;background:var(--line);flex:1;}
 </style>
 <div class="showcase-head">
- <div class="eyebrow">CABE · desenho do output</div>
+ <div class="eyebrow">RAIO · desenho do output</div>
  <div class="t">Ficha de capacidade construtiva</div>
  <div class="d">Dois exemplos reais gerados pelo motor. Capa, condicionantes (com recorte de mapa), capacidade e conclusão.</div>
 </div>

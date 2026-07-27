@@ -20,7 +20,7 @@ import json
 
 BASE = "https://fedservergeo.cm-porto.pt/arcgis/rest/services/PDM2021"
 WKID = 3763  # ETRS89 / PT-TM06
-_UA = {"User-Agent": "CABE/0.1 (analise nao vinculativa; opendata.porto.digital)"}
+_UA = {"User-Agent": "RAIO/0.1 (analise nao vinculativa; opendata.porto.digital)"}
 
 
 def _get(url: str, params: dict[str, Any], timeout: int = 60) -> dict:
@@ -123,7 +123,7 @@ def identify(service: str, x: float, y: float, *, tolerancia_m: float = 1.0,
 
 
 # ---------------------------------------------------------------------------
-# Ponte categoria de solo (gpkg/serviço) -> slug das regras CABE
+# Ponte categoria de solo (gpkg/serviço) -> slug das regras RAIO
 # ---------------------------------------------------------------------------
 import unicodedata
 
@@ -135,7 +135,7 @@ def _norm(s: str) -> str:
     return " ".join(s.split()).casefold()
 
 
-# Código do domínio sc_espaco (estável) -> slug de regras CABE. Autoritativo.
+# Código do domínio sc_espaco (estável) -> slug de regras RAIO. Autoritativo.
 _CODE_PARA_SLUG = {
     "TE2AFUCT1": "frente_urbana_continua_tipo_I",
     "TE2AFUCT2": "frente_urbana_continua_tipo_II",
@@ -152,7 +152,7 @@ _LABEL_PARA_SLUG = {
 
 
 def slug_categoria(sc_espaco: str | None) -> str | None:
-    """sc_espaco (código do domínio OU rótulo) -> slug de regras CABE, ou None."""
+    """sc_espaco (código do domínio OU rótulo) -> slug de regras RAIO, ou None."""
     if not sc_espaco:
         return None
     if sc_espaco in _CODE_PARA_SLUG:            # veio o código do REST
@@ -202,7 +202,7 @@ def consultar_ponto(x: float, y: float, *, tolerancia_m: float = 1.0) -> dict:
       x, y
       qualificacao_funcional: {c_espaco, sc_espaco, ...} | None
       qualificacao_operativa: {t_espaco, ...} | None
-      categoria_slug: slug de regras CABE (ou None)
+      categoria_slug: slug de regras RAIO (ou None)
       regras_aplicaveis: bool
       condicionantes: [ {camada, designacao, legislacao, valores} ... ]
     """

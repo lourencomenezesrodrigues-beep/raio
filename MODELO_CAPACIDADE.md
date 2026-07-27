@@ -1,4 +1,4 @@
-# CABE — Modelo do intervalo de capacidade (FUC tipo I)
+# RAIO — Modelo do intervalo de capacidade (FUC tipo I)
 
 ## Envelope base (limite inferior do intervalo)
 

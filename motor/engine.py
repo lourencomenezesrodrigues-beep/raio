@@ -1,4 +1,4 @@
-"""CABE — motor de cálculo (esqueleto de demonstração).
+"""RAIO — motor de cálculo (esqueleto de demonstração).
 
 Carrega as regras YAML e calcula o intervalo de capacidade para inputs
 sintéticos. A geometria real (parcelas, frentes urbanas, moda da cércea a
@@ -238,7 +238,7 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
 
     fn = _CAPACIDADE.get(slug)
     if fn is None:
-        out["estado"] = (f"categoria sem regras CABE implementadas "
+        out["estado"] = (f"categoria sem regras RAIO implementadas "
                          f"({cat.get('sc_espaco') or 'fora do solo qualificado'})"
                          f" — carece de análise")
         return out

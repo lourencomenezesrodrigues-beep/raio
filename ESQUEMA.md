@@ -1,4 +1,4 @@
-# CABE — Esquema dos ficheiros de regra
+# RAIO — Esquema dos ficheiros de regra
 
 Um ficheiro YAML por norma (nível da alínea). Campos:
 

@@ -34,7 +34,7 @@ def ficha_markdown(res: dict) -> str:
 
     # --- Identificação -----------------------------------------------------
     L.append("# Ficha de capacidade construtiva")
-    L.append("_Análise não vinculativa — concelho do Porto (CABE)_\n")
+    L.append("_Análise não vinculativa — concelho do Porto (RAIO)_\n")
     ident = []
     if rua:
         ident.append(f"**Frente urbana:** {rua}")
@@ -129,7 +129,7 @@ def ficha_markdown(res: dict) -> str:
                      f"({len(avisos)} aviso(s)), que podem restringir o envelope.")
     else:
         L.append(f"A categoria de solo do ponto ({cat}) não é coberta pelas "
-                 f"regras CABE implementadas — **carece de análise**. As "
+                 f"regras RAIO implementadas — **carece de análise**. As "
                  f"condicionantes acima mantêm-se relevantes.")
     L.append(f"\n> {FRASE_INCERTEZA}")
     L.append("\n_Não substitui pedido de informação prévia nem consulta dos "
@@ -187,7 +187,7 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
     assunto = rua or cat
     out.append('<section class="capa">')
     out.append('<div class="capa-top">'
-               '<div class="logo">CABE<span class="dot">.</span></div>'
+               '<div class="logo">RAIO<span class="dot">.</span></div>'
                '<div class="capa-tag">Análise não vinculativa<br>Concelho do Porto</div>'
                '</div>')
     out.append('<div class="capa-mid">')
@@ -211,7 +211,7 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
 
     # cabeçalho + meta
     out.append('<section>')
-    out.append('<div class="eyebrow">Análise não vinculativa · CABE — Porto</div>')
+    out.append('<div class="eyebrow">Análise não vinculativa · RAIO — Porto</div>')
     out.append('<h1>Ficha de capacidade construtiva</h1>')
     sub = rua if rua else "Frente urbana sem designação"
     out.append(f'<p class="lede">{_e(sub)}</p>')
@@ -352,7 +352,7 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
                            f'que podem restringir o envelope.')
     else:
         out.append(f'A categoria do ponto ({_e(cat)}) não é coberta pelas regras '
-                   f'CABE implementadas — <b>carece de análise</b>. As condicionantes '
+                   f'RAIO implementadas — <b>carece de análise</b>. As condicionantes '
                    f'acima mantêm-se relevantes.')
     out.append('</div>')
     out.append(f'<p class="uncert">{_e(FRASE_INCERTEZA)}</p>')
@@ -370,5 +370,5 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
                 '<div class="toolbar"><button class="btn" '
                 'onclick="window.print()">Imprimir ficha</button></div>\n'
                 f'<main class="sheet">\n{content}\n</main>')
-    titulo = f"Ficha CABE — {rua or cat}"
+    titulo = f"Ficha RAIO — {rua or cat}"
     return tpl.replace("{{TITLE}}", _e(titulo)).replace("{{CONTENT}}", content)
