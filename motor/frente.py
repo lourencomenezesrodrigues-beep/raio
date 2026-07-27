@@ -15,7 +15,7 @@ import sys
 
 import pandas as pd
 from pyproj import Transformer
-from shapely.geometry import Point
+from shapely.geometry import Point, LineString
 from shapely.ops import linemerge, unary_union, substring
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -44,6 +44,37 @@ def _line_parts(g):
             out += _line_parts(x)
         return out
     return []
+
+
+def _largura_arruamento(eixo, edif, P, *, R=45.0):
+    """Perfil transversal (largura da rua) no ponto: distância entre as fachadas
+    edificadas dos dois lados, medida na perpendicular ao eixo. None se não houver
+    edifícios de um dos lados."""
+    if edif is None or edif.empty:
+        return None
+    s = eixo.project(P)
+    Q = eixo.interpolate(s)
+    a = eixo.interpolate(max(s - 1.0, 0.0))
+    b = eixo.interpolate(min(s + 1.0, eixo.length))
+    dx, dy = b.x - a.x, b.y - a.y
+    L = math.hypot(dx, dy) or 1.0
+    nx, ny = -dy / L, dx / L                     # normal ao eixo
+    geoms = list(edif.geometry)
+
+    def lado(sx, sy):
+        ray = LineString([(Q.x, Q.y), (Q.x + sx * R, Q.y + sy * R)])
+        dmin = None
+        for g in geoms:
+            inter = ray.intersection(g)
+            if inter.is_empty:
+                continue
+            d = Q.distance(inter)                 # 1.ª fachada que o raio encontra
+            if d > 0.5 and (dmin is None or d < dmin):
+                dmin = d
+        return dmin
+
+    dA, dB = lado(nx, ny), lado(-nx, -ny)
+    return round(dA + dB, 1) if (dA and dB) else None
 
 
 def _lado_sinal(linha, p):
@@ -131,6 +162,7 @@ def frente_no_ponto(x, y, *, raio_m=70.0, janela_m=80.0, buffer_m=12.0):
         "n_edificios": res.n_edificios,
         "fonte_cercea": {"lidar": n_l, "height": n_h, "num_floors": n_f},
         "moda_cercea_m": res.moda_m,
+        "largura_arruamento_m": _largura_arruamento(lanco, edif, P),
         "distribuicao": res.distribuicao,
         "fracao_moda": round(res.fracao, 2),
     }
