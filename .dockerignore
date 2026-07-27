@@ -1,0 +1,11 @@
+.venv/
+dados/
+saidas/
+.git/
+.gitignore
+__pycache__/
+*.pyc
+testes/
+scripts/
+*.md
+!README.md

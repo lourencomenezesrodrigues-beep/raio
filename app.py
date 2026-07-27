@@ -27,7 +27,8 @@ from shapely.geometry import Polygon  # noqa: E402
 
 RAIZ = os.path.dirname(__file__)
 WEB = os.path.join(RAIZ, "web")
-PORTA = 8765
+HOST = os.environ.get("RAIO_HOST", "127.0.0.1")            # em deploy: 0.0.0.0
+PORTA = int(os.environ.get("PORT") or os.environ.get("RAIO_PORT") or 8765)
 _to3763 = Transformer.from_crs("EPSG:4326", "EPSG:3763", always_xy=True)
 
 
@@ -135,8 +136,10 @@ class Handler(BaseHTTPRequestHandler):
                                   ctype="text/html; charset=utf-8")
 
             self._send(404, {"erro": "rota desconhecida"})
-        except Exception as e:  # noqa: BLE001
-            self._send(500, {"erro": str(e)})
+        except Exception:  # noqa: BLE001
+            import traceback
+            traceback.print_exc()
+            self._send(500, {"erro": "erro interno ao processar o pedido"})
 
     def do_POST(self):
         u = urlparse(self.path)
@@ -151,8 +154,10 @@ class Handler(BaseHTTPRequestHandler):
                 res = engine.analisar_parcela(_poligono(pts), auto_moda=True, extra=extra)
                 return self._send(200, _resumo_ponto(res))
             self._send(404, {"erro": "rota desconhecida"})
-        except Exception as e:  # noqa: BLE001
-            self._send(500, {"erro": str(e)})
+        except Exception:  # noqa: BLE001
+            import traceback
+            traceback.print_exc()
+            self._send(500, {"erro": "erro interno ao processar o pedido"})
 
     def _serve_static(self, rel):
         caminho = os.path.normpath(os.path.join(WEB, rel))
@@ -173,8 +178,8 @@ def main():
         import parcela, frente, lidar  # noqa: F401
     except Exception:
         pass
-    srv = ThreadingHTTPServer(("127.0.0.1", PORTA), Handler)
-    print(f"RAIO a correr em http://127.0.0.1:{PORTA}  (Ctrl+C para parar)")
+    srv = ThreadingHTTPServer((HOST, PORTA), Handler)
+    print(f"RAIO a correr em http://{HOST}:{PORTA}  (Ctrl+C para parar)")
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

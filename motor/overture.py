@@ -8,7 +8,10 @@ from __future__ import annotations
 import geopandas as gpd
 from shapely import wkt
 
-REL = "2026-07-22.0"
+import os
+# Release do Overture. Actualizável sem tocar no código via RAIO_OVERTURE_REL,
+# porque os releases antigos acabam por ser removidos do bucket.
+REL = os.environ.get("RAIO_OVERTURE_REL", "2026-07-22.0")
 _BLD = f"s3://overturemaps-us-west-2/release/{REL}/theme=buildings/type=building/*.parquet"
 _SEG = f"s3://overturemaps-us-west-2/release/{REL}/theme=transportation/type=segment/*.parquet"
 
