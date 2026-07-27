@@ -27,6 +27,13 @@
   .cab{padding:20px 20px 14px;border-bottom:1px solid var(--line);
     display:flex;align-items:center;gap:12px}
   .cab svg{width:34px;height:34px;flex:none}
+  .cab .hbase{fill:none;stroke:var(--ink);stroke-width:9;opacity:.14;stroke-linejoin:miter}
+  .cab .hseg{fill:none;stroke:var(--vermelhao);stroke-width:9;stroke-linejoin:miter}
+  body.calculating .cab .hseg{stroke-dasharray:48 272;animation:march 1.4s linear infinite}
+  @media (prefers-reduced-motion:reduce){
+    body.calculating .cab .hseg{animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+  }
   .cab .wm{font-family:var(--archivo);font-weight:900;font-size:24px;letter-spacing:-.03em;
     line-height:1;text-transform:uppercase}
   .cab .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
@@ -111,9 +118,9 @@
 <body>
   <div id="painel">
     <div class="cab">
-      <svg viewBox="0 0 100 100" aria-label="RAIO">
-        <path d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z"
-              fill="none" stroke="#F03C2E" stroke-width="9" stroke-linejoin="miter"></path>
+      <svg class="hdr" viewBox="0 0 100 100" aria-label="RAIO">
+        <path class="hbase" d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z"></path>
+        <path class="hseg" d="M16,88 V40 H32 V24 H48 V16 H80 V48 H64 V64 H88 V88 Z"></path>
       </svg>
       <div>
         <div class="wm">RAIO</div>
@@ -201,17 +208,20 @@ const loaderHTML = txt => `<div class="loader"><svg viewBox="0 0 100 100">
 
 async function analisarPonto(lat, lon){
   res().innerHTML = loaderHTML('A ler o cadastro');
+  document.body.classList.add("calculating");
   try{
     const r = await fetch(`/api/analisar?lat=${lat}&lon=${lon}`);
     const d = await r.json();
     if(d.erro){ res().innerHTML=`<div class="muted">Erro: ${d.erro}</div>`; return; }
     render(d, `/api/ficha?lat=${lat}&lon=${lon}`);
   }catch(err){ res().innerHTML=`<div class="muted">Erro: ${err}</div>`; }
+  finally{ document.body.classList.remove("calculating"); }
 }
 
 async function analisarParcela(latlngs, extra){
   ultimoLatlngs = latlngs; ultimoExtra = extra || {};
   res().innerHTML = loaderHTML('A calcular a capacidade');
+  document.body.classList.add("calculating");
   try{
     const r = await fetch("/api/parcela", {method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -223,6 +233,7 @@ async function analisarParcela(latlngs, extra){
     for(const [k,v] of Object.entries(ultimoExtra)) q.set(k, v===true?"1":v);
     render(d, `/api/ficha?${q.toString()}`, true);
   }catch(err){ res().innerHTML=`<div class="muted">Erro: ${err}</div>`; }
+  finally{ document.body.classList.remove("calculating"); }
 }
 
 const num = (n,l,ph)=>`<label class="fx"><span>${l}</span>
@@ -308,7 +319,8 @@ function render(d, fichaHref, comForm){
   } else { h += `<div class="muted">Sem servidões ou restrições no ponto.</div>`; }
   if(mun.length) h += `<div class="mun">Âmbito municipal: ${mun.map(c=>c.camada).join("; ")}</div>`;
   h += `</div>`;
-  h += `<a class="ficha-btn" target="_blank" href="${fichaHref}">Abrir ficha ↗</a>`;
+  if(d.capacidade || d.regime)
+    h += `<a class="ficha-btn" target="_blank" href="${fichaHref}">Abrir ficha ↗</a>`;
   if(comForm) h += formHTML(d.categoria_slug);
   res().innerHTML = h;
   const f = document.getElementById("fx-form");
