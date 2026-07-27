@@ -13,10 +13,13 @@ env/
 *.gpkg-wal
 dados/
 
-# Exceção: dados PDM embutidos no deploy (leves — Qualificação do Solo +
-# Condicionantes, extraídos do opendata e reempacotados). A app lê estes.
+# Exceção: dados embutidos no deploy (leves). A app lê estes.
+#  - PDM: Qualificação do Solo + Condicionantes (opendata.porto.digital)
+#  - Overture: edifícios + ruas do Porto (para a moda da cércea / largura da rua)
 !dados_pdm/qs.gpkg
 !dados_pdm/ccgd.gpkg
+!dados_pdm/edificado.gpkg
+!dados_pdm/ruas.gpkg
 
 # Sistema
 .DS_Store
