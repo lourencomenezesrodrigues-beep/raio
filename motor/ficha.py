@@ -164,7 +164,15 @@ def _num(v, u=""):
     return f"{v}{us}"
 
 
-def ficha_html(res: dict, *, fragment: bool = False) -> str:
+DISCLAIMER_CAPA = (
+    "Ferramenta de análise não vinculativa da capacidade construtiva de terrenos "
+    "no concelho do Porto, a partir de dados abertos (PDM 2021 do Porto, Overture "
+    "Maps). Os valores são estimativas com base na aplicação estrita do RPDM e não "
+    "substituem pedido de informação prévia nem consulta dos serviços municipais."
+)
+
+
+def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) -> str:
     cat = res.get("categoria") or "—"
     cod = res.get("categoria_cod")
     p = res.get("ponto", {})
@@ -174,6 +182,32 @@ def ficha_html(res: dict, *, fragment: bool = False) -> str:
     cap = res.get("capacidade")
 
     out = []
+
+    # --- CAPA -------------------------------------------------------------
+    assunto = rua or cat
+    out.append('<section class="capa">')
+    out.append('<div class="capa-top">'
+               '<div class="logo">CABE<span class="dot">.</span></div>'
+               '<div class="capa-tag">Análise não vinculativa<br>Concelho do Porto</div>'
+               '</div>')
+    out.append('<div class="capa-mid">')
+    out.append('<div class="capa-t">Ficha de capacidade construtiva</div>')
+    out.append('<div class="capa-sub">Estimativa do envelope construtivo de uma '
+               'parcela, com as condicionantes e as regras do PDM que a determinam.</div>')
+    ref = []
+    if assunto:
+        ref.append(f'<div><span class="k">Objecto:</span> {_e(assunto)}</div>')
+    if res.get("ponto", {}).get("x") is not None:
+        ref.append(f'<div><span class="k">Ponto EPSG:3763:</span> '
+                   f'{res["ponto"]["x"]:.1f}, {res["ponto"]["y"]:.1f}</div>')
+    if ref:
+        out.append('<div class="capa-ref">' + "".join(ref) + '</div>')
+    out.append('</div>')
+    out.append('<div class="capa-foot">')
+    out.append(f'<div class="capa-disc">{_e(DISCLAIMER_CAPA)}</div>')
+    out.append('<div class="capa-by">by <b>Dinosaur Ideas</b></div>')
+    out.append('</div>')
+    out.append('</section>')
 
     # cabeçalho + meta
     out.append('<section>')
@@ -201,16 +235,33 @@ def ficha_html(res: dict, *, fragment: bool = False) -> str:
     efet = res.get("condicionantes_efetivas") or []
     munic = res.get("condicionantes_ambito_municipal") or []
     if efet:
+        px = res.get("ponto", {}).get("x")
+        py = res.get("ponto", {}).get("y")
+        mapbase = None
+        if com_mapas and px is not None and any(c.get("layer_id") is not None for c in efet):
+            import mapa
+            mapbase = mapa.base(px, py)
         out.append('<div class="cond">')
         for c in efet:
             w = _warn(c.get("camada"))
             badge = '<span class="badge">!</span>' if w else ""
+            out.append('<div class="cond-item">')
             out.append(f'<div class="row {"warn" if w else ""}">')
             out.append(f'<div class="top">{badge}<span class="layer">{_e(c["camada"])}</span></div>')
             if c.get("designacao"):
                 out.append(f'<p class="desc">{_e(c["designacao"])}</p>')
             if c.get("legislacao"):
                 out.append(f'<div class="leg">{_e(c["legislacao"])}</div>')
+            out.append('</div>')
+            if mapbase and c.get("layer_id") is not None:
+                import mapa
+                over = mapa.camada(px, py, c["layer_id"])
+                if over:
+                    out.append(f'<div class="cond-map" style="--map-base:url(\'{mapbase}\')">')
+                    out.append(f'<img class="over" src="{over}" alt="Excerto do mapa — {_e(c["camada"])}">')
+                    out.append('<span class="pin"></span>')
+                    out.append('<span class="attr">© Esri · CM Porto — PDM 2021</span>')
+                    out.append('</div>')
             out.append('</div>')
         out.append('</div>')
     else:

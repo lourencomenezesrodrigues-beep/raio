@@ -165,14 +165,28 @@ _CAPACIDADE = {
 }
 
 # condicionantes de âmbito municipal (aparecem em quase todos os pontos)
-_COND_AMBITO_MUNICIPAL = {"Área de Intervenção do Plano"}
+_COND_AMBITO_MUNICIPAL = {
+    "Área de Intervenção do Plano",
+    "Aeroportos e aeródromos (zonas de servidão aeronáutica)",
+}
+
+
+def _limpa_designacao(d):
+    """Descarta designações que são só um GUID (sem nome útil)."""
+    if not d or not isinstance(d, str):
+        return None
+    s = d.strip()
+    if s.startswith("{") and s.endswith("}"):
+        return None
+    return d
 
 
 def _condicionantes_para_avisos(condicionantes):
     efetivas, municipais, avisos = [], [], []
     for c in condicionantes or []:
         camada = c.get("camada") or ""
-        item = {"camada": camada, "designacao": c.get("designacao"),
+        item = {"camada": camada, "layer_id": c.get("layer_id"),
+                "designacao": _limpa_designacao(c.get("designacao")),
                 "legislacao": c.get("legislacao")}
         if camada in _COND_AMBITO_MUNICIPAL:
             municipais.append(item)
@@ -181,7 +195,7 @@ def _condicionantes_para_avisos(condicionantes):
         cl = camada.lower()
         if "patrimón" in cl or "patrimon" in cl or "imóveis classificados" in cl:
             avisos.append(f"aviso patrimonial: {camada}"
-                          + (f" — {c.get('designacao')}" if c.get("designacao") else ""))
+                          + (f" — {item['designacao']}" if item["designacao"] else ""))
         elif "hídric" in cl or "hidric" in cl or "domínio público" in cl:
             avisos.append(f"servidão/domínio: {camada}")
         elif "servidão" in cl or "servidao" in cl or "non aedificandi" in cl:

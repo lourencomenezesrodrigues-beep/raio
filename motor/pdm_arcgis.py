@@ -236,6 +236,7 @@ def consultar_ponto(x: float, y: float, *, tolerancia_m: float = 1.0) -> dict:
         attrs = r.get("attributes", {})
         cond.append({
             "camada": r.get("layerName"),
+            "layer_id": r.get("layerId"),
             "designacao": _attr(attrs, "designacao", "identifica"),
             "legislacao": _attr(attrs, "legislacao_aplicavel", "legislacao"),
             "valores": attrs,
