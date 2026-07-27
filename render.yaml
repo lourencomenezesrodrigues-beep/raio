@@ -1,0 +1,16 @@
+# Blueprint do Render — deploy do RAIO por container.
+# Render define $PORT automaticamente; a app lê-o. RAIO_HOST=0.0.0.0 já vem no Dockerfile.
+services:
+  - type: web
+    name: raio
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: frankfurt          # EU, perto de Portugal
+    plan: starter              # ~7 USD/mês (não adormece). "free" existe mas dorme e tem menos RAM.
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: RAIO_HOST
+        value: 0.0.0.0
+      # opcional: - key: RAIO_OVERTURE_REL
+      #             value: 2026-07-22.0
