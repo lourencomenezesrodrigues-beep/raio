@@ -256,7 +256,8 @@ function formHTML(slug){
            + chk("uso_habitacao_coletiva","Habitação coletiva")
            + chk("gaveto","Parcela de gaveto");
   } else if(slug==="edificios_tipo_moradia"){
-    campos = num("moda_cercea_m","Moda da cércea (colmatação)","m")
+    campos = chk("uso_habitacao_coletiva","Habitação coletiva")
+           + num("moda_cercea_m","Moda da cércea (colmatação)","m")
            + chk("colmatacao_consolidado","Colmatação de conjunto consolidado")
            + chk("uopg","Em UOPG");
   } else { return ""; }

@@ -147,6 +147,27 @@ def capacidade_moradia(parcela):
                      f"(impermeabilização 0,6 [30.1.b], logradouro permeável a tardoz); "
                      f"{pisos - 1} pisos superiores recuados {recuo:.0f} m dos limites "
                      f"[30.1.d] = {round(a_sup)} m² cada.")
+        # uso de habitação coletiva: a categoria admite-o (29.º) mas os fogos
+        # ficam sujeitos ao RGEU art. 62.º — afastamento mínimo ao tardoz
+        # (>= metade da cércea, mín. 6 m) para habitabilidade.
+        if parcela.get("uso_habitacao_coletiva"):
+            aplicadas.append("rgeu-62")
+            corte = max(6.0, cercea / 2.0)
+            prof_terreo_max = max(prof - corte, 0.0)
+            if prof_terreo > prof_terreo_max:
+                prof_terreo = prof_terreo_max
+                a_terreo = frente * prof_terreo
+                implantacao = a_terreo
+                a_sup = max(frente - 2 * recuo, 0.0) * max(prof_terreo - recuo, 0.0)
+                abc_min = a_terreo + a_sup * (pisos - 1)
+                notas.append(f"Uso de habitação coletiva: profundidade do piso térreo "
+                             f"limitada a {prof_terreo:.0f} m para garantir {corte:.0f} m de "
+                             f"afastamento ao tardoz (RGEU art. 62.º) — implantação e ABC "
+                             f"reduzidas em conformidade.")
+            else:
+                notas.append("Uso de habitação coletiva: admitido (a morfologia «tipo "
+                             "moradia» é de forma, não de uso [29.º]); o afastamento ao "
+                             "tardoz do RGEU art. 62.º já é satisfeito pela geometria.")
     else:
         implantacao = impermeavel_max
         a_sup = 0.0
