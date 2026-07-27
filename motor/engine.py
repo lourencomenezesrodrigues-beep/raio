@@ -232,11 +232,100 @@ def capacidade_fuc2(parcela):
     }
 
 
-# despacho categoria -> função de capacidade
+def _cap_indice(parcela, *, indice, imperm_max, pisos_max, ids_base, sup=None, notas=None):
+    """Capacidade por índice de edificação (ABC = índice × área). Usada nas
+    categorias económicas, blocos isolados e baixa densidade. Não precisa de
+    moda/cércea — a cércea/nº de pisos resultam da integração urbanística."""
+    area = parcela["area_m2"]
+    return {
+        "cercea_m": None, "pisos": pisos_max,
+        "indice_edificacao": indice,
+        "implantacao_m2": round(imperm_max * area),
+        "abc_min_m2": round(indice * area), "abc_max_m2": round(indice * area),
+        "regras_base": list(ids_base),
+        "regras_limite_superior": list(sup or []),
+        "notas": list(notas or []),
+        "incerteza": ("Área bruta de construção máxima pela aplicação do índice de "
+                      "edificação do RPDM. A cércea e o nº de pisos resultam da "
+                      "integração urbanística com a envolvente."),
+    }
+
+
+def capacidade_blocos(parcela):
+    """Área de Blocos Isolados de Implantação Livre (RPDM 31.º-33.º)."""
+    sup = ["rpdm-32.5 (colmatação de empena)"] if parcela.get("empena_confinante_m") else None
+    return _cap_indice(parcela, indice=1.0, imperm_max=0.6, pisos_max=None,
+                       ids_base=["rpdm-32.3.a", "rpdm-32.4", "rpdm-33"], sup=sup,
+                       notas=["rpdm-32.6: cércea assegura a integração com a envolvente",
+                              "rpdm-32.3.b: índice de edificação alterável em UOPG"])
+
+
+def capacidade_ae1(parcela):
+    """Área de Atividades Económicas de Tipo I (RPDM 35.º-36.º)."""
+    return _cap_indice(parcela, indice=1.8, imperm_max=0.7, pisos_max=None,
+                       ids_base=["rpdm-36.1", "rpdm-36.2"],
+                       notas=["rpdm-35.2: habitação só para vigilância/segurança (≤ 5% da edificação)",
+                              "rpdm-36.1: índice alterável em UOPG"])
+
+
+def capacidade_ae2(parcela):
+    """Área de Atividades Económicas de Tipo II (RPDM 37.º-38.º)."""
+    return _cap_indice(parcela, indice=1.4, imperm_max=0.7, pisos_max=None,
+                       ids_base=["rpdm-38.1", "rpdm-38.2"],
+                       notas=["rpdm-37.2: habitação admitida se área < área de atividades económicas",
+                              "rpdm-38.1: índice alterável em UOPG"])
+
+
+def capacidade_baixa_densidade(parcela):
+    """Espaços Urbanos de Baixa Densidade (RPDM 45.º-48.º)."""
+    if parcela["area_m2"] >= 1000:
+        return _cap_indice(parcela, indice=0.2, imperm_max=0.3, pisos_max=2,
+                           ids_base=["rpdm-47.2", "rpdm-48"],
+                           notas=["rpdm-47.4: nº de pisos pode ser superior em UOPG"])
+    return {"carece": True,
+            "motivo": ("parcela < 1000 m²: sem índice fixo — respeitar volumetria, cércea "
+                       "e alinhamentos dominantes, máx. 2 pisos acima do solo [rpdm-47.3]"),
+            "regras_base": ["rpdm-47.3", "rpdm-48"]}
+
+
+# despacho categoria -> função de capacidade (envelope/índice)
 _CAPACIDADE = {
     "frente_urbana_continua_tipo_I": capacidade_fuc1,
     "frente_urbana_continua_tipo_II": capacidade_fuc2,
     "edificios_tipo_moradia": capacidade_moradia,
+    "blocos_isolados": capacidade_blocos,
+    "atividades_economicas_tipo_I": capacidade_ae1,
+    "atividades_economicas_tipo_II": capacidade_ae2,
+    "baixa_densidade": capacidade_baixa_densidade,
+}
+
+# categorias de regime especial (sem envelope de capacidade lote a lote)
+_REGIME = {
+    "historica": {"edificavel": "apreciação", "artigos": ["rpdm-19", "rpdm-20", "rpdm-21", "rpdm-22"],
+        "sintese": "Área histórica: conservação e requalificação do edificado; nova construção só "
+                   "para substituir edifícios demolíveis [21.º] ou ocupar parcelas não edificadas, "
+                   "respeitando cércea e alinhamentos vizinhos [20.º] — carece de análise patrimonial."},
+    "verde_fruicao_coletiva": {"edificavel": "muito limitada", "artigos": ["rpdm-40"],
+        "sintese": "Espaço verde de fruição coletiva: não edificável, salvo estruturas de apoio à "
+                   "fruição, com impermeabilização máxima de 0,05 da parcela [40.º]."},
+    "verde_ludico_produtiva": {"edificavel": "muito limitada", "artigos": ["rpdm-41"],
+        "sintese": "Área verde lúdico-produtiva: apenas conservação/ampliação de existentes ou apoios "
+                   "às atividades, impermeabilização ≤ 0,05 e máx. 2 pisos [41.º]."},
+    "verde_associada_equipamento": {"edificavel": "limitada", "artigos": ["rpdm-42"],
+        "sintese": "Área verde associada a equipamento: construção admitida mantendo o coberto "
+                   "vegetal, com implantação total das construções ≤ 20% da parcela [42.º]."},
+    "verde_protecao_enquadramento": {"edificavel": "interdita", "artigos": ["rpdm-43"],
+        "sintese": "Área verde de proteção e enquadramento: construção interdita, salvo intervenções "
+                   "ao nível das redes de infraestruturas [43.º]."},
+    "frente_atlantica_ribeirinha": {"edificavel": "interdita", "artigos": ["rpdm-44"],
+        "sintese": "Frente atlântica e ribeirinha: construção interdita, salvo infraestruturas, "
+                   "proteção costeira e equipamentos ligeiros de apoio lúdico/desportivo [44.º]."},
+    "equipamentos": {"edificavel": "por programa", "artigos": ["rpdm-49", "rpdm-50", "rpdm-51"],
+        "sintese": "Uso especial — equipamentos: edificabilidade essencial à viabilidade do "
+                   "equipamento, impermeabilização ≤ 0,65 e correta inserção urbana [51.º]."},
+    "infraestruturas": {"edificavel": "por programa", "artigos": ["rpdm-52", "rpdm-53", "rpdm-54"],
+        "sintese": "Uso especial — infraestruturas: edificabilidade a necessária à infraestrutura; "
+                   "usos complementares até 25% da área da parcela [54.º]."},
 }
 
 # condicionantes de âmbito municipal (aparecem em quase todos os pontos)
@@ -302,15 +391,24 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
         "categoria": cat.get("sc_espaco"),
         "categoria_cod": cat.get("sc_espaco_cod"),
         "categoria_slug": slug,
-        "regras_implementadas": slug in _CAPACIDADE,
+        "regras_implementadas": slug in _CAPACIDADE or slug in _REGIME,
         "operativa": (consulta.get("operativa") or {}).get("t_espaco"),
         "condicionantes_efetivas": efetivas,
         "condicionantes_ambito_municipal": municipais,
         "avisos": avisos,
+        "regime": None,
         "frente": None,
         "capacidade": None,
         "estado": None,
     }
+
+    # categorias de regime especial (verdes, frente atlântica, uso especial, histórica):
+    # não têm envelope lote a lote — devolvem a síntese do regime.
+    reg = _REGIME.get(slug)
+    if reg is not None:
+        out["regime"] = reg
+        out["estado"] = reg["sintese"]
+        return out
 
     fn = _CAPACIDADE.get(slug)
     if fn is None:
@@ -343,8 +441,12 @@ def analisar_ponto(x, y, parcela=None, consulta=None, auto_moda=False):
                          "arruamento) — forneça moda_cercea_m ou largura_arruamento_m")
         return out
 
-    out["capacidade"] = fn(parcela)
-    out["estado"] = "ok"
+    cap = fn(parcela)
+    if cap.get("carece"):  # ex.: baixa densidade < 1000 m²
+        out["estado"] = cap["motivo"]
+    else:
+        out["capacidade"] = cap
+        out["estado"] = "ok"
     return out
 
 

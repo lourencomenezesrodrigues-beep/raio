@@ -1,0 +1,13 @@
+id: rpdm-36.1
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 36.º, n.º 1"
+categoria: atividades_economicas_tipo_I
+tema: indice_edificacao
+texto: >
+  O índice de edificação máximo admitido é de 1,8, o qual poderá assumir outros valores
+  desde que justificados no âmbito de uma UOPG.
+parametros:
+  indice_edificacao_max: 1.8
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: base

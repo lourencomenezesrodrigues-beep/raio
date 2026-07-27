@@ -1,0 +1,13 @@
+id: rpdm-31
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 31.º"
+categoria: blocos_isolados
+tema: ambito_e_objetivos
+texto: >
+  As áreas de blocos de edificação isolada de implantação livre correspondem a espaços
+  urbanos de formação recente, com edifícios isolados de operações de loteamento ou
+  intervenções de dimensão significativa, que não definem malhas regulares nem frente
+  urbana contínua.
+computabilidade: semi
+entradas: [categoria_solo]
+papel_no_intervalo: nota

@@ -1,0 +1,11 @@
+id: rpdm-33
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 33.º"
+categoria: blocos_isolados
+tema: logradouros
+texto: >
+  Os logradouros destinam-se a coberto vegetal permeável, não se admitindo a sua
+  impermeabilização, com exceção da área de implantação da cave e dos acessos.
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: base

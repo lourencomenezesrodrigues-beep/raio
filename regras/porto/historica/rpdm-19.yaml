@@ -1,0 +1,14 @@
+id: rpdm-19
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 19.º"
+categoria: historica
+tema: ambito_e_objetivos
+texto: >
+  As áreas históricas correspondem aos tecidos consolidados mais antigos da cidade e às
+  reminiscências dos núcleos rurais primitivos que ainda conservam a estrutura e os
+  elementos morfológicos iniciais (Centro Histórico do Porto, Foz Velha e núcleos
+  identificados na Carta de Património I). Pretende-se a preservação e requalificação
+  do edificado e dos espaços livres.
+computabilidade: semi
+entradas: [categoria_solo]
+papel_no_intervalo: nota

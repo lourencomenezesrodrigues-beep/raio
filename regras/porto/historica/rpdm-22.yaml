@@ -1,0 +1,13 @@
+id: rpdm-22
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 22.º"
+categoria: historica
+tema: logradouros
+texto: >
+  Os logradouros devem ser livres de edificação e ocupados por coberto vegetal
+  permeável; excecional e fundamentadamente pode admitir-se edificação, ponderando os
+  valores arquitetónicos, patrimoniais e ambientais e privilegiando a redução da área
+  impermeável anterior.
+computabilidade: apreciacao
+entradas: [poligono_parcela]
+papel_no_intervalo: nota

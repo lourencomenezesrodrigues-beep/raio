@@ -1,0 +1,14 @@
+id: rpdm-54
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 54.º"
+categoria: infraestruturas
+tema: edificabilidade
+texto: >
+  A edificabilidade permitida é a necessária para a infraestrutura em causa, com
+  adequada inserção paisagística e urbana. A edificabilidade máxima para usos
+  complementares equivale a 25% da área da parcela.
+parametros:
+  usos_complementares_max_fracao: 0.25
+computabilidade: apreciacao
+entradas: [poligono_parcela]
+papel_no_intervalo: nota

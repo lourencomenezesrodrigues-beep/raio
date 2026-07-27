@@ -1,0 +1,13 @@
+id: rpdm-32.3.a
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 32.º, n.º 3, alínea a)"
+categoria: blocos_isolados
+tema: indice_edificacao
+texto: >
+  A construção de novos edifícios subordina-se a que a área de edificação admitida não
+  seja superior à resultante da aplicação de um índice de edificação de 1.
+parametros:
+  indice_edificacao_max: 1
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: base

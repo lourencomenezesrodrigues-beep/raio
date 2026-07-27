@@ -1,0 +1,11 @@
+id: rpdm-37.2
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 37.º, n.º 2"
+categoria: atividades_economicas_tipo_II
+tema: usos
+texto: >
+  É permitida a construção de habitação desde que a área de edificação destinada a esse
+  uso seja inferior à área atribuída à instalação de atividades económicas.
+computabilidade: semi
+entradas: [uso]
+papel_no_intervalo: nota

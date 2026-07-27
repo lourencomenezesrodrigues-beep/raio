@@ -137,17 +137,41 @@ def _norm(s: str) -> str:
 
 # Código do domínio sc_espaco (estável) -> slug de regras RAIO. Autoritativo.
 _CODE_PARA_SLUG = {
+    "TE2AH": "historica",
     "TE2AFUCT1": "frente_urbana_continua_tipo_I",
     "TE2AFUCT2": "frente_urbana_continua_tipo_II",
     "TE2AETM": "edificios_tipo_moradia",
+    "TE2ABIIL": "blocos_isolados",
+    "TE2AAET1": "atividades_economicas_tipo_I",
+    "TE2AAET2": "atividades_economicas_tipo_II",
+    "TE2AVFC": "verde_fruicao_coletiva",
+    "TE2AVLP": "verde_ludico_produtiva",
+    "TE2AVAE": "verde_associada_equipamento",
+    "TE2AVPE": "verde_protecao_enquadramento",
+    "TE2AFAR": "frente_atlantica_ribeirinha",
+    "TE2EUBD": "baixa_densidade",
+    "TE2AE": "equipamentos",
+    "TE2AI": "infraestruturas",
 }
 
 # Fallback por rótulo (para dados já decodificados, ex. o gpkg).
 # Igualdade exacta sobre string normalizada — nunca substring ("tipo i" ⊂ "tipo ii").
 _LABEL_PARA_SLUG = {
+    _norm("Área histórica"): "historica",
     _norm("Área de frente urbana contínua de tipo I"): "frente_urbana_continua_tipo_I",
     _norm("Área de frente urbana contínua de tipo II"): "frente_urbana_continua_tipo_II",
     _norm("Área de edifícios de tipo moradia"): "edificios_tipo_moradia",
+    _norm("Área de blocos isolados de implantação livre"): "blocos_isolados",
+    _norm("Área de atividades económicas de tipo I"): "atividades_economicas_tipo_I",
+    _norm("Área de atividades económicas de tipo II"): "atividades_economicas_tipo_II",
+    _norm("Área verde de fruição coletiva"): "verde_fruicao_coletiva",
+    _norm("Área verde lúdico-produtiva"): "verde_ludico_produtiva",
+    _norm("Área verde associada a equipamento"): "verde_associada_equipamento",
+    _norm("Área verde de proteção e enquadramento"): "verde_protecao_enquadramento",
+    _norm("Área de frente atlântica e ribeirinha"): "frente_atlantica_ribeirinha",
+    _norm("Espaços urbanos de baixa densidade"): "baixa_densidade",
+    _norm("Área de equipamentos"): "equipamentos",
+    _norm("Área de infraestruturas"): "infraestruturas",
 }
 
 

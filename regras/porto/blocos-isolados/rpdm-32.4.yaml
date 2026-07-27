@@ -1,0 +1,12 @@
+id: rpdm-32.4
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 32.º, n.º 4"
+categoria: blocos_isolados
+tema: impermeabilizacao
+texto: >
+  O índice de impermeabilização não pode ser superior a 0,6 na área da parcela.
+parametros:
+  indice_impermeabilizacao_max: 0.6
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: base

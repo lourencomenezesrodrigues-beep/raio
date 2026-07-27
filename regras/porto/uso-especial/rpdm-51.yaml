@@ -1,0 +1,15 @@
+id: rpdm-51
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 51.º"
+categoria: equipamentos
+tema: edificabilidade
+texto: >
+  Nas parcelas de área de equipamento admitem-se obras de edificação e demolição
+  essenciais à viabilidade do equipamento, com correta inserção urbana e paisagística e
+  índice máximo de impermeabilização não superior a 0,65 (salvo situações excecionais
+  fundamentadas). Atividades complementares até 35% da edificação existente.
+parametros:
+  indice_impermeabilizacao_max: 0.65
+computabilidade: apreciacao
+entradas: [poligono_parcela]
+papel_no_intervalo: nota

@@ -1,7 +1,8 @@
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "motor"))
 from engine import (capacidade_fuc1, capacidade_fuc2, capacidade_moradia,
-                    carregar_regras, analisar_ponto)
+                    capacidade_blocos, capacidade_ae1, capacidade_ae2,
+                    capacidade_baixa_densidade, carregar_regras, analisar_ponto)
 
 def test_regras_carregam():
     r = carregar_regras("fuc-1", "moradia", "transversais")
@@ -87,6 +88,28 @@ def test_fuc2_moda_supera_teto():
         largura_arruamento_m=30, moda_cercea_m=24))  # moda > 21 -> respeita moda
     assert r["cercea_m"] == 24
 
+def test_indice_categorias():
+    assert capacidade_blocos(dict(area_m2=500))["abc_min_m2"] == 500       # índice 1
+    assert capacidade_blocos(dict(area_m2=500))["implantacao_m2"] == 300   # 0,6
+    assert capacidade_ae1(dict(area_m2=1000))["abc_min_m2"] == 1800        # índice 1,8
+    assert capacidade_ae2(dict(area_m2=1000))["abc_min_m2"] == 1400        # índice 1,4
+
+def test_baixa_densidade():
+    r = capacidade_baixa_densidade(dict(area_m2=1200))
+    assert r["abc_min_m2"] == 240 and r["pisos"] == 2                       # 0,2 × 1200
+    r2 = capacidade_baixa_densidade(dict(area_m2=600))
+    assert r2.get("carece") is True                                        # < 1000 m²
+
+def test_analisar_regime_verde():
+    consulta = {"categoria_slug": "verde_protecao_enquadramento",
+                "categoria": {"sc_espaco": "Área verde de proteção e enquadramento"},
+                "operativa": {}, "condicionantes": []}
+    r = analisar_ponto(0, 0, None, consulta=consulta)
+    assert r["capacidade"] is None
+    assert r["regime"]["edificavel"] == "interdita"
+    assert "interdita" in r["estado"]
+    assert r["regras_implementadas"] is True
+
 def test_metricas_parcela_alinhada():
     import parcela
     from shapely.geometry import LineString, Polygon
@@ -116,5 +139,6 @@ if __name__ == "__main__":
     test_analisar_ponto_despacho_fuc1(); test_analisar_ponto_sem_regras_com_aviso()
     test_fuc2_regras_carregam(); test_fuc2_arruamento_estreito()
     test_fuc2_arruamento_largo_teto_21(); test_fuc2_moda_supera_teto()
+    test_indice_categorias(); test_baixa_densidade(); test_analisar_regime_verde()
     test_metricas_parcela_alinhada(); test_metricas_parcela_rodada()
     print("todos os testes passam")

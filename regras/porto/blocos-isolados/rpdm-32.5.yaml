@@ -1,0 +1,11 @@
+id: rpdm-32.5
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 32.º, n.º 5"
+categoria: blocos_isolados
+tema: colmatacao_empena
+texto: >
+  Excetuam-se da alínea a) do n.º 3 as edificações que estejam a colmatar empenas
+  existentes.
+computabilidade: automatica_com_edificado
+entradas: [edificado_frente_urbana]
+papel_no_intervalo: excecao_superior

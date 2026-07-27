@@ -1,0 +1,16 @@
+id: rpdm-47.2
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 47.º, n.º 2"
+categoria: baixa_densidade
+tema: indice_edificacao
+texto: >
+  Nas parcelas com área igual ou superior a 1000 m2, o índice de impermeabilização do
+  solo não pode ser superior a 0,3 e o índice de edificação não pode ser superior a 0,2,
+  podendo este último ser alterado no âmbito de uma UOPG.
+parametros:
+  area_parcela_min_m2: 1000
+  indice_impermeabilizacao_max: 0.3
+  indice_edificacao_max: 0.2
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: base

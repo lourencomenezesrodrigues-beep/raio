@@ -350,6 +350,10 @@ def ficha_html(res: dict, *, fragment: bool = False, com_mapas: bool = False) ->
             if n_w:
                 out.append(f' Atenção às {n_w} condicionante(s) assinaladas, '
                            f'que podem restringir o envelope.')
+    elif res.get("regime"):
+        out.append(f'{_e(res["regime"]["sintese"])} '
+                   f'<b>Edificabilidade: {_e(res["regime"]["edificavel"])}.</b> '
+                   f'As condicionantes acima mantêm-se relevantes.')
     else:
         out.append(f'A categoria do ponto ({_e(cat)}) não é coberta pelas regras '
                    f'RAIO implementadas — <b>carece de análise</b>. As condicionantes '

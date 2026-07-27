@@ -1,0 +1,12 @@
+id: rpdm-35.2
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 35.º, n.º 2"
+categoria: atividades_economicas_tipo_I
+tema: usos
+texto: >
+  Não é permitida a construção de habitação, excetuando a adstrita ao pessoal de
+  vigilância e segurança, desde que a sua área não ultrapasse 5% do total da área de
+  edificação da operação urbanística.
+computabilidade: semi
+entradas: [uso]
+papel_no_intervalo: nota

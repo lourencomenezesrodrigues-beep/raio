@@ -1,0 +1,14 @@
+id: rpdm-47.3
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 47.º, n.º 3"
+categoria: baixa_densidade
+tema: pequenas_parcelas
+texto: >
+  Nas restantes parcelas, quando não seja possível cumprir os parâmetros do número
+  anterior por integração urbanística e paisagística, deve respeitar-se a volumetria, a
+  cércea, os alinhamentos dominantes e o número máximo de 2 pisos acima do solo.
+parametros:
+  pisos_max: 2
+computabilidade: apreciacao
+entradas: [edificado_frente_urbana]
+papel_no_intervalo: nota

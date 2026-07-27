@@ -1,0 +1,14 @@
+id: rpdm-40
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 40.º"
+categoria: verde_fruicao_coletiva
+tema: area_verde_fruicao_coletiva
+texto: >
+  Parques e jardins de acesso público, praças arborizadas e ajardinadas. Admitem-se
+  estruturas de apoio à fruição, sem prejuízo do valor patrimonial, com índice de
+  impermeabilização não superior a 0,05 da área da parcela.
+parametros:
+  indice_impermeabilizacao_max: 0.05
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: nota

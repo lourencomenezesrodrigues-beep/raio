@@ -1,0 +1,12 @@
+id: rpdm-36.2
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 36.º, n.º 2"
+categoria: atividades_economicas_tipo_I
+tema: impermeabilizacao
+texto: >
+  A área impermeabilizada não poderá ser superior a 70% da área da parcela.
+parametros:
+  indice_impermeabilizacao_max: 0.7
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: base

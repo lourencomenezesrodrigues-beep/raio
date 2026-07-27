@@ -1,0 +1,15 @@
+id: rpdm-41
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 41.º"
+categoria: verde_ludico_produtiva
+tema: area_verde_ludico_produtiva
+texto: >
+  Manchas agricultadas ou florestadas de interesse paisagístico. Só se admitem obras de
+  conservação/ampliação de existentes ou de apoio às atividades, com impermeabilização
+  não superior a 0,05 e nº de pisos idêntico ao existente ou, no máximo, dois.
+parametros:
+  indice_impermeabilizacao_max: 0.05
+  pisos_max: 2
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: nota

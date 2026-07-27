@@ -1,0 +1,14 @@
+id: rpdm-42
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 42.º"
+categoria: verde_associada_equipamento
+tema: area_verde_associada_equipamento
+texto: >
+  Parcelas afetas a equipamentos de interesse público em que o coberto vegetal permeável
+  é predominante. Admite-se construção desde que se mantenha o coberto vegetal e a
+  implantação total das construções não ultrapasse 20% da área total da parcela.
+parametros:
+  implantacao_max_fracao: 0.20
+computabilidade: automatica
+entradas: [poligono_parcela]
+papel_no_intervalo: nota

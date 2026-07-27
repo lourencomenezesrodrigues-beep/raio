@@ -1,0 +1,11 @@
+id: rpdm-45
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 45.º"
+categoria: baixa_densidade
+tema: ambito_e_objetivos
+texto: >
+  Territórios de génese rural, infraestruturados, com parcelas que permitem logradouro,
+  predominando habitação unifamiliar de um ou dois pisos facejando o espaço público.
+computabilidade: semi
+entradas: [categoria_solo]
+papel_no_intervalo: nota

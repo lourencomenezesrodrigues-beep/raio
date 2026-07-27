@@ -1,0 +1,12 @@
+id: rpdm-43
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 43.º"
+categoria: verde_protecao_enquadramento
+tema: area_verde_protecao_enquadramento
+texto: >
+  Destinam-se a proteção física, visual e sonora e a preservação de espaços de
+  sensibilidade ecológica. É interdita a construção, com exceção de intervenções ao
+  nível das redes de infraestruturas.
+computabilidade: apreciacao
+entradas: [categoria_solo]
+papel_no_intervalo: nota

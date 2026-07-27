@@ -185,12 +185,21 @@ function render(d, fichaHref){
     h += `<div class="sec"><div class="k">Parcela</div><div class="mono" style="font-size:13px">
       ${fmt(m.area_m2)} m² · frente ${fmt(m.frente_m)} m · prof. ${fmt(m.profundidade_m)} m</div></div>`;
   }
-  if(d.capacidade){
+  if(d.regime){
+    h += `<div class="sec"><div class="k">Regime de edificabilidade</div>
+      <div class="cond warn"><div class="l">${d.regime.edificavel}</div>
+      <div class="d">${d.regime.sintese}</div></div></div>`;
+  } else if(d.capacidade){
     const c = d.capacidade;
     const abc = c.abc_min_m2===c.abc_max_m2 ? `${c.abc_min_m2} m²` : `${c.abc_min_m2}–${c.abc_max_m2} m²`;
+    const spec = [];
+    if(c.indice_edificacao!=null) spec.push(`índice ${c.indice_edificacao}`);
+    if(c.cercea_m!=null) spec.push(`cércea ${fmt(c.cercea_m)} m`);
+    if(c.pisos!=null) spec.push(`${c.pisos} pisos`);
+    if(c.implantacao_m2!=null) spec.push(`implantação ${fmt(c.implantacao_m2)} m²`);
     h += `<div class="sec"><div class="k">Capacidade estimada</div>
       <div class="abc">${abc}<span class="u"> ABC</span></div>
-      <div class="spec mono">cércea ${fmt(c.cercea_m)} m · ${c.pisos} pisos · implantação ${fmt(c.implantacao_m2)} m²</div></div>`;
+      <div class="spec mono">${spec.join(" · ")}</div></div>`;
   } else if(d.estado && d.estado!=="ok"){
     h += `<div class="sec"><div class="muted">${d.estado}</div></div>`;
   }

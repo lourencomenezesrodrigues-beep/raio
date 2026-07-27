@@ -1,0 +1,12 @@
+id: rpdm-44
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 44.º"
+categoria: frente_atlantica_ribeirinha
+tema: area_frente_atlantica_ribeirinha
+texto: >
+  Integra praias e zonas de transição marítimo/flúvio-terrestre. É interdita a
+  construção, com exceção de infraestruturas, obras de proteção costeira e equipamentos
+  ligeiros de apoio ao uso lúdico e desportivo.
+computabilidade: apreciacao
+entradas: [categoria_solo]
+papel_no_intervalo: nota

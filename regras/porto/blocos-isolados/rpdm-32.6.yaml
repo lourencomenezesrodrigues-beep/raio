@@ -1,0 +1,11 @@
+id: rpdm-32.6
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 32.º, n.º 6"
+categoria: blocos_isolados
+tema: cercea
+texto: >
+  A cércea a adotar deve assegurar a integração urbanística com os edifícios e zonas
+  envolventes.
+computabilidade: apreciacao
+entradas: [edificado_frente_urbana]
+papel_no_intervalo: nota

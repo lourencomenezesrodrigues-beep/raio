@@ -1,0 +1,14 @@
+id: rpdm-20
+diploma: RPDM do Porto — Regulamento (pdm.cm-porto.pt/documents/121)
+norma: "Artigo 20.º"
+categoria: historica
+tema: edificabilidade
+texto: >
+  Nos edifícios existentes qualquer intervenção deve ter como regra a sua conservação,
+  admitindo-se reconstrução quando justificada pela degradação e mantendo as principais
+  características. Só são permitidas novas construções para substituir edifícios
+  demolíveis (art. 21.º) ou ocupar parcelas não edificadas, devendo estabelecer correta
+  relação com os edifícios vizinhos (cércea, alinhamentos e imagem urbana).
+computabilidade: apreciacao
+entradas: [edificado_frente_urbana,carta_patrimonio]
+papel_no_intervalo: nota
